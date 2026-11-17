@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f1f4fa" />
+    <meta name="description" content="PocketRoute helps you explore alternative Tube routes when your journey changes." />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/flow-overrides.css" />
+    <title>PocketRoute</title>
+  </head>
+  <body>
+    <main id="app" aria-live="polite"></main>
+    <nav class="tabs" aria-label="Main navigation">
+      <button data-tab="route" class="tab active"><span>↗</span>Re-route</button>
+      <button data-tab="saved" class="tab"><span>▱</span>Saved</button>
+      <button data-tab="settings" class="tab"><span>⚙</span>Settings</button>
+    </nav>
+    <dialog id="station-dialog">
+      <form class="picker-head"><button id="picker-cancel" class="plain">Cancel</button><strong id="picker-title">Where are you?</strong><button id="picker-done" class="plain">Done</button></form>
+      <label class="search"><span>⌕</span><input id="station-search" placeholder="Search stations" autocomplete="off" /></label>
+      <div id="station-list" class="station-list"></div>
+    </dialog>
+    <dialog id="offline-dialog" class="offline-dialog" aria-labelledby="offline-title">
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <header class="offline-heading"><span class="offline-symbol">⌁</span><div><strong id="offline-title">You’re offline</strong><small id="offline-last-signal">Last known station · Camden Town</small></div></header>
+      <p class="offline-intro">That’s fine. PocketRoute keeps this demo’s station sample on your device. Here’s what’s available:</p>
+      <div class="offline-features">
+        <div class="offline-feature available"><span>✓</span><div><strong>Re-routing</strong><small>Demo station sample is available on this device</small></div></div>
+        <div class="offline-feature unavailable"><span>×</span><div><strong>On-device AI</strong><small>AI isn’t connected in this prototype</small></div></div>
+        <div class="offline-feature unavailable"><span>×</span><div><strong>Voice</strong><small>Voice input isn’t available in this PWA</small></div></div>
+        <div class="offline-feature unavailable"><span>×</span><div><strong>Live service updates</strong><small>Needs a network connection</small></div></div>
+        <div class="offline-feature unavailable"><span>×</span><div><strong>Account sync</strong><small>Needs a network connection</small></div></div>
+      </div>
+      <button class="primary offline-dismiss" data-action="dismiss-offline">Got it</button>
+    </dialog>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

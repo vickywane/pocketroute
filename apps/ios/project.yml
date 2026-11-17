@@ -1,0 +1,51 @@
+name: PockerRouter
+options:
+  bundleIdPrefix: dev.pockerrouter
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+packages:
+  Firebase:
+    url: https://github.com/firebase/firebase-ios-sdk
+    from: 13.2.0
+targets:
+  PockerRouter:
+    type: application
+    platform: iOS
+    sources:
+      - path: PockerRouter
+        excludes:
+          - Resources/**
+      - path: ../../shared/fixtures
+        buildPhase: resources
+    preBuildScripts:
+      - name: Copy Firebase Configuration
+        basedOnDependencyAnalysis: false
+        script: |
+          CONFIG_FILE="${SRCROOT}/PockerRouter/Resources/GoogleService-Info.plist"
+          if [ -f "$CONFIG_FILE" ]; then
+            mkdir -p "${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"
+            cp "$CONFIG_FILE" "${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleService-Info.plist"
+          else
+            echo "warning: GoogleService-Info.plist is missing; Firebase will stay disabled."
+          fi
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.pockerrouter.ios
+        INFOPLIST_KEY_CFBundleDisplayName: PockerRouter
+        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Suggest a nearby Tube station to confirm as your starting point."
+        INFOPLIST_KEY_NSSpeechRecognitionUsageDescription: "Transcribe a short description of what happened on your journey."
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: "Record a short voice description of what happened on your journey."
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIUserInterfaceStyle: Automatic
+        SWIFT_VERSION: "6.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - package: Firebase
+        product: FirebaseAILogic
+      - package: Firebase
+        product: FirebaseAppCheck
+      - package: Firebase
+        product: FirebaseCore

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "networkId": "london-underground",
+  "version": "20261117-191431",
+  "generatedAt": "2026-11-17T19:14:31Z",
+  "snapshot": "/maps/london-underground/20261117-191431.json",
+  "sizeBytes": 2354969,
+  "sha256": "96a6cbbd67aab4713dd173bbf700d69dcdf557ed21ab2eceb1cde96ee1a8f986",
+  "coverage": {
+    "serviceTypes": [
+      "Regular",
+      "Night"
+    ],
+    "stationCount": 272,
+    "lineCount": 11,
+    "routeCount": 79,
+    "segmentCount": 2149,
+    "accessViaLiftField": "TfL AccessViaLift station attribute; detailed platform-level paths are in stepFreeTopology",
+    "stepFreeTopologyIncluded": true,
+    "stepFreeRoutingReady": false,
+    "stepFreeRoutingLimitation": "Static step-free topology is included; live lift outages are not.",
+    "interchangeCoverage": "shared station IDs and TfL hub codes; no transfer path or duration supplied",
+    "walkingLinksIncluded": false,
+    "scheduledRunTimesIncluded": false,
+    "liveDisruptionsIncluded": false
+  },
+  "attribution": "Powered by TfL Open Data",
+  "licenceUrl": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+  "termsUrl": "https://tfl.gov.uk/corporate/terms-and-conditions/transport-data-service"
+}

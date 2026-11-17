@@ -1,0 +1,16 @@
+{
+  "catalogSchemaVersion": 1,
+  "cities": [
+    {
+      "cityId": "gb-london",
+      "displayName": "London, UK",
+      "networks": [
+        {
+          "networkId": "london-underground",
+          "displayName": "London Underground",
+          "manifestPath": "/datasets/v1/cities/gb-london/networks/london-underground/manifest.json"
+        }
+      ]
+    }
+  ]
+}

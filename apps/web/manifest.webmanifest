@@ -1,0 +1,11 @@
+{
+  "id": "/",
+  "name": "PocketRoute",
+  "short_name": "PocketRoute",
+  "description": "Offline-first Tube re-routing companion",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f1f4fa",
+  "theme_color": "#f1f4fa",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

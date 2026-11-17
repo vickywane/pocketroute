@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pockerrouter.dev/schemas/london-underground-network-v1.schema.json",
+  "title": "PocketRoute London Underground Network Snapshot v1",
+  "type": "object",
+  "required": ["schemaVersion", "networkId", "version", "generatedAt", "source", "lines", "stations", "routes", "segments", "interchanges", "stepFreeTopology", "coverage"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "networkId": { "const": "london-underground" },
+    "version": { "type": "string" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "source": {
+      "type": "object",
+      "required": ["name", "attribution", "licence", "licenceUrl", "termsUrl", "dataSources"],
+      "properties": {
+        "name": { "type": "string" },
+        "attribution": { "type": "string" },
+        "licence": { "type": "string" },
+        "licenceUrl": { "type": "string", "format": "uri" },
+        "termsUrl": { "type": "string", "format": "uri" },
+        "dataSources": { "type": "array", "items": { "type": "object", "required": ["url", "recordCount"], "properties": { "url": { "type": "string", "format": "uri" }, "recordCount": { "type": "integer", "minimum": 0 }, "feedStartDate": { "type": ["string", "null"] }, "archiveSha256": { "type": "string" } }, "additionalProperties": false } }
+      },
+      "additionalProperties": false
+    },
+    "lines": { "type": "array", "items": { "type": "object", "required": ["id", "name", "mode"], "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "mode": { "type": "string" } }, "additionalProperties": false } },
+    "stations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "latitude", "longitude", "zone", "hubId", "topologyStationId", "lineIds", "accessViaLift"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "latitude": { "type": ["number", "null"], "minimum": -90, "maximum": 90 },
+          "longitude": { "type": ["number", "null"], "minimum": -180, "maximum": 180 },
+          "zone": { "type": ["string", "null"] },
+          "hubId": { "type": ["string", "null"] },
+          "topologyStationId": { "type": "string" },
+          "lineIds": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "accessViaLift": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "routes": { "type": "array", "items": { "type": "object", "required": ["id", "lineId", "direction", "serviceType", "name", "stationIds"], "properties": { "id": { "type": "string" }, "lineId": { "type": "string" }, "direction": { "enum": ["inbound", "outbound"] }, "serviceType": { "enum": ["Regular", "Night"] }, "name": { "type": "string" }, "stationIds": { "type": "array", "items": { "type": "string" }, "minItems": 2 } }, "additionalProperties": false } },
+    "segments": { "type": "array", "items": { "type": "object", "required": ["id", "routeId", "lineId", "direction", "serviceType", "fromStationId", "toStationId", "order", "typicalRunTimeSeconds"], "properties": { "id": { "type": "string" }, "routeId": { "type": "string" }, "lineId": { "type": "string" }, "direction": { "enum": ["inbound", "outbound"] }, "serviceType": { "enum": ["Regular", "Night"] }, "fromStationId": { "type": "string" }, "toStationId": { "type": "string" }, "order": { "type": "integer", "minimum": 1 }, "typicalRunTimeSeconds": { "type": ["number", "null"], "minimum": 0 } }, "additionalProperties": false } },
+    "interchanges": { "type": "array", "items": { "type": "object", "required": ["id", "stationIds", "lineIds", "type", "transferTimeSeconds"], "properties": { "id": { "type": "string" }, "stationIds": { "type": "array", "items": { "type": "string" }, "minItems": 1 }, "lineIds": { "type": "array", "items": { "type": "string" }, "minItems": 2 }, "type": { "enum": ["same-station", "linked-stations"] }, "transferTimeSeconds": { "type": ["number", "null"], "minimum": 0 } }, "additionalProperties": false } },
+    "stepFreeTopology": {
+      "type": "object",
+      "required": ["sourceFormat", "topologyStations", "platforms", "tubePlatformServices", "stationPoints", "paths", "lifts", "stepFreePlatformInterchanges"],
+      "properties": {
+        "sourceFormat": { "type": "string" },
+        "topologyStations": { "type": "array", "items": { "type": "object" } },
+        "platforms": { "type": "array", "items": { "type": "object", "required": ["id", "topologyStationId", "lineIds", "hasStepFreeRouteInformation", "stepFreeFromStreet"], "properties": { "id": { "type": "string" }, "topologyStationId": { "type": "string" }, "lineIds": { "type": "array", "items": { "type": "string" } }, "hasStepFreeRouteInformation": { "type": "boolean" }, "stepFreeFromStreet": { "enum": ["available", "no-recorded-path", "unknown"] } } } },
+        "tubePlatformServices": { "type": "array", "items": { "type": "object", "required": ["platformId", "lineId", "designatedLevelAccessPoint", "manualRampRequired"], "properties": { "platformId": { "type": "string" }, "lineId": { "type": "string" }, "designatedLevelAccessPoint": { "type": "boolean" }, "manualRampRequired": { "type": "boolean" } } } },
+        "stationPoints": { "type": "array", "items": { "type": "object", "required": ["id", "topologyStationId"], "properties": { "id": { "type": "string" }, "topologyStationId": { "type": "string" } } } },
+        "paths": { "type": "array", "items": { "type": "object", "required": ["from", "to", "type"], "properties": { "from": { "type": "string" }, "to": { "type": "string" }, "type": { "enum": ["same-level", "ramp", "lift"] }, "liftId": { "type": "string" } } } },
+        "lifts": { "type": "array", "items": { "type": "object", "required": ["id", "topologyStationId", "limitedCapacity"], "properties": { "id": { "type": "string" }, "topologyStationId": { "type": "string" }, "limitedCapacity": { "type": "boolean" } } } },
+        "stepFreePlatformInterchanges": { "type": "array", "items": { "type": "object", "required": ["fromPlatformId", "toPlatformId"], "properties": { "fromPlatformId": { "type": "string" }, "toPlatformId": { "type": "string" }, "distanceMetres": { "type": ["number", "null"], "minimum": 0 } } } }
+      }
+    },
+    "coverage": { "type": "object", "required": ["serviceTypes", "stationCount", "lineCount", "routeCount", "segmentCount", "accessViaLiftField", "stepFreeTopologyIncluded", "stepFreeRoutingReady", "stepFreeRoutingLimitation", "interchangeCoverage", "walkingLinksIncluded", "scheduledRunTimesIncluded", "liveDisruptionsIncluded"], "properties": { "serviceTypes": { "type": "array", "items": { "type": "string" } }, "stationCount": { "type": "integer" }, "lineCount": { "type": "integer" }, "routeCount": { "type": "integer" }, "segmentCount": { "type": "integer" }, "accessViaLiftField": { "type": "string" }, "stepFreeTopologyIncluded": { "type": "boolean" }, "stepFreeRoutingReady": { "type": "boolean" }, "stepFreeRoutingLimitation": { "type": "string" }, "interchangeCoverage": { "type": "string" }, "walkingLinksIncluded": { "type": "boolean" }, "scheduledRunTimesIncluded": { "type": "boolean" }, "liveDisruptionsIncluded": { "type": "boolean" } }, "additionalProperties": false }
+  },
+  "additionalProperties": false
+}
