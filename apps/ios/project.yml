@@ -16,7 +16,7 @@ targets:
       - path: PockerRouter
         excludes:
           - Resources/**
-      - path: ../../shared/fixtures
+      - path: ../../shared/fixtures/london-underground-network-v1.json
         buildPhase: resources
     preBuildScripts:
       - name: Copy Firebase Configuration
@@ -34,6 +34,8 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: dev.pockerrouter.ios
         INFOPLIST_KEY_CFBundleDisplayName: PockerRouter
         INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Suggest a nearby Tube station to confirm as your starting point."
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
         INFOPLIST_KEY_NSSpeechRecognitionUsageDescription: "Transcribe a short description of what happened on your journey."
         INFOPLIST_KEY_NSMicrophoneUsageDescription: "Record a short voice description of what happened on your journey."
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
@@ -44,8 +46,27 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
     dependencies:
       - package: Firebase
-        product: FirebaseAILogic
-      - package: Firebase
         product: FirebaseAppCheck
       - package: Firebase
         product: FirebaseCore
+  PockerRouterTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: PockerRouterTests
+    dependencies:
+      - target: PockerRouter
+    settings:
+      base:
+        SWIFT_VERSION: "6.0"
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: dev.pockerrouter.ios.tests
+schemes:
+  PockerRouter:
+    build:
+      targets:
+        PockerRouter: all
+        PockerRouterTests: [test]
+    test:
+      targets:
+        - PockerRouterTests

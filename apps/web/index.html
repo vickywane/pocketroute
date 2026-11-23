@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#f1f4fa" />
-    <meta name="description" content="PocketRoute helps you explore alternative Tube routes when your journey changes." />
+    <meta name="theme-color" content="#f1f4fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#141518" media="(prefers-color-scheme: dark)" />
+    <meta name="description" content="PocketRoute finds another way across the Tube when your journey breaks, even with no signal." />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="apple-touch-icon" href="/icon.svg" />
     <link rel="stylesheet" href="/styles.css" />
@@ -15,27 +16,36 @@
     <main id="app" aria-live="polite"></main>
     <nav class="tabs" aria-label="Main navigation">
       <button data-tab="route" class="tab active"><span>↗</span>Re-route</button>
-      <button data-tab="saved" class="tab"><span>▱</span>Saved</button>
+      <button data-tab="ask" class="tab"><span>✦</span>Ask AI</button>
+      <button data-tab="saved" class="tab"><span>◷</span>History</button>
       <button data-tab="settings" class="tab"><span>⚙</span>Settings</button>
     </nav>
     <dialog id="station-dialog">
-      <form class="picker-head"><button id="picker-cancel" class="plain">Cancel</button><strong id="picker-title">Where are you?</strong><button id="picker-done" class="plain">Done</button></form>
+      <header class="picker-head"><span class="nav-slot"></span><strong id="picker-title">Where are you?</strong><button class="sheet-close" data-action="close-dialog" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
       <label class="search"><span>⌕</span><input id="station-search" placeholder="Search stations" autocomplete="off" /></label>
       <div id="station-list" class="station-list"></div>
     </dialog>
     <dialog id="offline-dialog" class="offline-dialog" aria-labelledby="offline-title">
-      <div class="sheet-handle" aria-hidden="true"></div>
-      <header class="offline-heading"><span class="offline-symbol">⌁</span><div><strong id="offline-title">You’re offline</strong><small id="offline-last-signal">Last known station · Camden Town</small></div></header>
-      <p class="offline-intro">That’s fine. PocketRoute keeps this demo’s station sample on your device. Here’s what’s available:</p>
+      <header class="offline-heading"><span class="offline-symbol">⌁</span><div><strong id="offline-title">You’re offline</strong><small id="offline-last-signal">No recent location</small></div><button class="sheet-close" data-action="close-dialog" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
       <div class="offline-features">
-        <div class="offline-feature available"><span>✓</span><div><strong>Re-routing</strong><small>Demo station sample is available on this device</small></div></div>
-        <div class="offline-feature unavailable"><span>×</span><div><strong>On-device AI</strong><small>AI isn’t connected in this prototype</small></div></div>
-        <div class="offline-feature unavailable"><span>×</span><div><strong>Voice</strong><small>Voice input isn’t available in this PWA</small></div></div>
-        <div class="offline-feature unavailable"><span>×</span><div><strong>Live service updates</strong><small>Needs a network connection</small></div></div>
-        <div class="offline-feature unavailable"><span>×</span><div><strong>Account sync</strong><small>Needs a network connection</small></div></div>
+        <div class="offline-feature available"><span>✓</span><div><strong>Re-routing</strong><small id="offline-map-detail">Saved Tube map</small></div></div>
+        <div class="offline-feature unavailable"><span>×</span><div><strong>AI understanding</strong><small>Quick replies only</small></div></div>
+        <div class="offline-feature unavailable"><span>×</span><div><strong>Voice</strong><small>Not in the browser</small></div></div>
+        <div class="offline-feature unavailable"><span>×</span><div><strong>Live service updates</strong><small>Needs signal. Tell me what you see instead.</small></div></div>
       </div>
-      <button class="primary offline-dismiss" data-action="dismiss-offline">Got it</button>
     </dialog>
+    <dialog id="menu-dialog" class="side-menu" aria-labelledby="menu-title">
+      <header class="side-menu-head"><div><strong id="menu-title">PocketRoute</strong></div><button class="sheet-close" data-action="close-dialog" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
+      <ul class="side-menu-list" aria-label="Trip types">
+        <li><button class="menu-item current" data-action="menu-tube" aria-current="true"><span class="menu-icon">🚇</span><span><strong>For the Tube</strong><small id="menu-tube-detail">London · map saved</small></span></button></li>
+        <li><button class="menu-item" disabled aria-label="For Trains, coming soon"><span class="menu-icon" aria-hidden="true">🚆</span><span>For Trains</span><em>Coming soon</em></button></li>
+        <li><button class="menu-item" disabled aria-label="For Water, coming soon"><span class="menu-icon" aria-hidden="true">⛴</span><span>For Water</span><em>Coming soon</em></button></li>
+        <li><button class="menu-item" disabled aria-label="For Camping, coming soon"><span class="menu-icon" aria-hidden="true">⛺</span><span>For Camping</span><em>Coming soon</em></button></li>
+        <li><button class="menu-item" disabled aria-label="For Hiking, coming soon"><span class="menu-icon" aria-hidden="true">⛰</span><span>For Hiking</span><em>Coming soon</em></button></li>
+      </ul>
+    </dialog>
+    <dialog id="location-dialog" class="permission-dialog" aria-labelledby="location-title"></dialog>
+    <div id="toasts" class="toasts" aria-live="polite"></div>
     <script src="/app.js" type="module"></script>
   </body>
 </html>

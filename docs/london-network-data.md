@@ -20,7 +20,7 @@ The outputs are `shared/fixtures/london-underground-network-v1.json` and `shared
 
 ## Deliberate limits
 
-This is static network topology, not a live service feed. The station topology archive is refreshed quarterly and does not tell the app whether a lift is currently out of service; use current TfL lift/disruption information before presenting a step-free journey as available. There are no walking links between separate stations or source-provided train run times. Transfer durations remain unknown, so route ranking should use stop count/changes or clearly labelled estimates rather than invented precision.
+This is static network topology, not a live service feed. The station topology archive is refreshed quarterly and does not tell the app whether a lift is currently out of service; use current TfL lift/disruption information before presenting a step-free journey as available. There are no walking links between separate stations or source-provided train run times. Transfer durations remain unknown, so the route engines estimate ride time from distance (about 33 km/h plus dwell) and add fixed waits for boarding (4 min) and changes (5 min). The apps label these as estimates.
 
 ## Attribution and terms
 
@@ -28,7 +28,7 @@ The snapshot carries the attribution `Powered by TfL Open Data`. TfL states that
 
 ## Update/deployment flow
 
-Regenerate this artifact from a trusted build environment, review the provenance/coverage metadata and route-count changes, then publish a versioned copy to Firebase Hosting. Publish a small `manifest.json` separately; the iOS client downloads the manifest, fetches a versioned snapshot, verifies its checksum, and only then activates it. Bundle a known-good snapshot with the app so first launch and failed updates still work offline.
+Regenerate this artifact from a trusted build environment, review the provenance/coverage metadata and route-count changes, then stage it with `python3 tools/publish_dataset.py` and deploy with `npx firebase-tools deploy --only hosting:pockerrouter-2026` (the data site; the PWA is a separate site). The staging script checks the snapshot against its manifest, copies it to its immutable version folder, refuses to overwrite an existing version with different bytes, and adds the network to the catalog. Publish a small `manifest.json` separately; the iOS client downloads the manifest, fetches a versioned snapshot, verifies its checksum, and only then activates it. Bundle a known-good snapshot with the app so first launch and failed updates still work offline.
 
 ## Published Firebase Hosting files
 

@@ -33,7 +33,7 @@ The API layer in the app should be a small transport boundary, not a route-compu
 - `NetworkRepository` exposes the active dataset to search and UI code without exposing file paths or download details.
 - `RouteEngine` reads the active local graph and calculates routes deterministically on device.
 
-The iOS Settings screen now has a city/network map menu populated from the Hosting catalog. Selecting an entry fetches its manifest and snapshot; only after checksum and schema validation does the app save it under `Application Support/PocketRoute/Datasets/{cityId}/{networkId}/{version}/network.json` and make that entry active. The station picker and nearby-station suggestion use the selected snapshot's station data. Route cards and route search are still demo-only and have not yet been connected to the graph.
+The iOS Settings screen now has a city/network map menu populated from the Hosting catalog. Selecting an entry fetches its manifest and snapshot; only after checksum and schema validation does the app save it under `Application Support/PocketRoute/Datasets/{cityId}/{networkId}/{version}/network.json` and make that entry active. The station picker, nearby-station suggestion and route search all use the active snapshot. The active file is recorded relative to `Datasets/`, and older versions are deleted after a new one is activated.
 
 Keep these behind protocols so the UI does not depend on URLSession or Firebase. A future provider can change without changing route search.
 

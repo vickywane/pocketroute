@@ -7,29 +7,75 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		256FFECE7FBA3E7F5BD2680C /* JourneyQuestionInterpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6F17797090320CBE82863D /* JourneyQuestionInterpreter.swift */; };
-		35D695347C6AE928D2AA5F3A /* DemoJourneyRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C4FB0050E0C4AE1D970DAF /* DemoJourneyRepository.swift */; };
+		1408CA56C8B9D5C158A165ED /* Sheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45349F44AF7B85D94631A5F2 /* Sheets.swift */; };
+		280EC32DDB0ABE495921EFAD /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761E165E669480AA489AFF0C /* OnboardingView.swift */; };
+		28967FBA9EEE4C2FEDCE7C29 /* RerouteAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6320EA4A78E33B73DA68DE61 /* RerouteAssistant.swift */; };
+		36DFBF63D45AD9E4D2FFA8A3 /* PassengerTurn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD9CDA757BA33DC51B2695B /* PassengerTurn.swift */; };
+		3CA3B7354BBFA213105A292F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D08E8E58EA8CE6402AF466 /* SettingsView.swift */; };
+		3E13EB8EFF65648BBD66A787 /* RerouteSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CD4EB14B214E5E40D4994 /* RerouteSession.swift */; };
 		418CF2D427E1B405A95D37A3 /* london-underground-network-v1.json in Resources */ = {isa = PBXBuildFile; fileRef = 13A61574A5E423343BA842FB /* london-underground-network-v1.json */; };
-		4EC600CBFECB28811F8CCF3B /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 1556FA2695947ED221389801 /* FirebaseCore */; };
-		8562590AE3BD99B47ADB2AD1 /* london-underground-manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = D44714EA5E9B4D6D486A3D1A /* london-underground-manifest.json */; };
-		B309231CF22CC9C38D49DB27 /* demo-journey.json in Resources */ = {isa = PBXBuildFile; fileRef = 5BA9DEC4B4CDF957FF5BC9E7 /* demo-journey.json */; };
-		BE84A632A538729E8B800C2A /* FirebaseAILogic in Frameworks */ = {isa = PBXBuildFile; productRef = 258455CAC77B7AC664E23DBC /* FirebaseAILogic */; };
+		4541F548587688CF3DE81AA3 /* VoiceCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6259CB6CF06A72874E7E58AA /* VoiceCapture.swift */; };
+		53B7F1AC9EEFA03A8999AFDA /* GuidanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FCCF4BA5BF95DAFD7865B0 /* GuidanceView.swift */; };
+		54311BE63DE4F157326A3312 /* StationLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEF0F9C95565F5FBB24BA1A /* StationLocator.swift */; };
+		60FF011E23153299838372B4 /* StationMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C19397ABD1B29271EDB865 /* StationMatcher.swift */; };
+		6AFC6322E0B79CC70BAEE4B9 /* CaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0DD06F6328FCA4EE792F124 /* CaptureView.swift */; };
+		7761F45896ACA743E0385526 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8D8927A47442EDC34C5740 /* Theme.swift */; };
+		7817BAE2EE854C07C7306307 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5B00F7FE4022C99BCB8FA4 /* Components.swift */; };
+		7C26F6DC749F85EB3F70CEF2 /* Connectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE8C83024C3E3945D69C083 /* Connectivity.swift */; };
+		91808A51B7D4D121295DD7D7 /* ConversationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D3BC4BFF64C491CAB9C80F /* ConversationView.swift */; };
+		9C6702A57F5B43F524275A57 /* RouteEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAD80BFD440832DA0AB50431 /* RouteEngine.swift */; };
+		A27CFD1A2E759967ADF15211 /* OnDeviceParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C46AF01F25159B485A91B42 /* OnDeviceParser.swift */; };
+		BE84A632A538729E8B800C2A /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 59B1C381A5523FA0DE510CD0 /* FirebaseAppCheck */; };
+		D6833E63ADAB0B63E064A382 /* AssistantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34B3105F71E0989CB20A09B /* AssistantTests.swift */; };
+		DE6B8A1CD4B6F7B0A80C3B73 /* StationPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4B80044814A28FC0AD7CA6 /* StationPickerView.swift */; };
 		E6BE6F7AB27B50E2B94A6D8B /* JourneyHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E934D723FDC4C4D462ECC61 /* JourneyHomeView.swift */; };
+		E96641DEC3CE0018A3169F69 /* RouteEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3926356EACC8774272DEEE35 /* RouteEngineTests.swift */; };
+		EFF88F2802A691815350A405 /* NetworkGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = E842BCF8E0C6DEE22E62E01C /* NetworkGraph.swift */; };
+		F3221F32678607BD1ECE73C1 /* DatasetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE24730C0C6A4971DC2A415 /* DatasetStore.swift */; };
 		F4E3D76D5B21B522973C7CF8 /* PockerRouterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2486C503A642F925183A78A /* PockerRouterApp.swift */; };
-		F4F714F860111C126AEF7F8D /* Journey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E5A130624C49F1EE6456EAC /* Journey.swift */; };
-		FD9C7DD25A6A37BA2A2672CC /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 59B1C381A5523FA0DE510CD0 /* FirebaseAppCheck */; };
+		F8C8048F18259CD38838B5C5 /* SavedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AF25642EDD173453AA7716 /* SavedView.swift */; };
+		FD9C7DD25A6A37BA2A2672CC /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 1556FA2695947ED221389801 /* FirebaseCore */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		B8F8123AB09BEF1A531072CD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3154F282F138AC1CF3D20122 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 57302B62ED2704B4CEEB57A6;
+			remoteInfo = PockerRouter;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
-		0A6F17797090320CBE82863D /* JourneyQuestionInterpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyQuestionInterpreter.swift; sourceTree = "<group>"; };
 		13A61574A5E423343BA842FB /* london-underground-network-v1.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "london-underground-network-v1.json"; sourceTree = "<group>"; };
-		37C4FB0050E0C4AE1D970DAF /* DemoJourneyRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoJourneyRepository.swift; sourceTree = "<group>"; };
+		1BD9CDA757BA33DC51B2695B /* PassengerTurn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassengerTurn.swift; sourceTree = "<group>"; };
+		1FE8C83024C3E3945D69C083 /* Connectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connectivity.swift; sourceTree = "<group>"; };
+		20C19397ABD1B29271EDB865 /* StationMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationMatcher.swift; sourceTree = "<group>"; };
+		3926356EACC8774272DEEE35 /* RouteEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteEngineTests.swift; sourceTree = "<group>"; };
+		3E4B80044814A28FC0AD7CA6 /* StationPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationPickerView.swift; sourceTree = "<group>"; };
+		420CD4EB14B214E5E40D4994 /* RerouteSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RerouteSession.swift; sourceTree = "<group>"; };
+		45349F44AF7B85D94631A5F2 /* Sheets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sheets.swift; sourceTree = "<group>"; };
 		4C929CE72A0B12BB6055DD50 /* PockerRouter.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PockerRouter.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		4E5A130624C49F1EE6456EAC /* Journey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Journey.swift; sourceTree = "<group>"; };
-		5BA9DEC4B4CDF957FF5BC9E7 /* demo-journey.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "demo-journey.json"; sourceTree = "<group>"; };
+		6259CB6CF06A72874E7E58AA /* VoiceCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceCapture.swift; sourceTree = "<group>"; };
+		6320EA4A78E33B73DA68DE61 /* RerouteAssistant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RerouteAssistant.swift; sourceTree = "<group>"; };
+		70D3BC4BFF64C491CAB9C80F /* ConversationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationView.swift; sourceTree = "<group>"; };
+		761E165E669480AA489AFF0C /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		84FCCF4BA5BF95DAFD7865B0 /* GuidanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceView.swift; sourceTree = "<group>"; };
+		8C46AF01F25159B485A91B42 /* OnDeviceParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDeviceParser.swift; sourceTree = "<group>"; };
 		8E934D723FDC4C4D462ECC61 /* JourneyHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JourneyHomeView.swift; sourceTree = "<group>"; };
 		B2486C503A642F925183A78A /* PockerRouterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PockerRouterApp.swift; sourceTree = "<group>"; };
-		D44714EA5E9B4D6D486A3D1A /* london-underground-manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "london-underground-manifest.json"; sourceTree = "<group>"; };
+		BAD80BFD440832DA0AB50431 /* RouteEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteEngine.swift; sourceTree = "<group>"; };
+		C6790A77DDB58CF65101219C /* PockerRouterTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PockerRouterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB8D8927A47442EDC34C5740 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		DE5B00F7FE4022C99BCB8FA4 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		DEE24730C0C6A4971DC2A415 /* DatasetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasetStore.swift; sourceTree = "<group>"; };
+		E0DD06F6328FCA4EE792F124 /* CaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureView.swift; sourceTree = "<group>"; };
+		E34B3105F71E0989CB20A09B /* AssistantTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistantTests.swift; sourceTree = "<group>"; };
+		E6D08E8E58EA8CE6402AF466 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		E842BCF8E0C6DEE22E62E01C /* NetworkGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkGraph.swift; sourceTree = "<group>"; };
+		F1AF25642EDD173453AA7716 /* SavedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedView.swift; sourceTree = "<group>"; };
+		FAEF0F9C95565F5FBB24BA1A /* StationLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationLocator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,15 +83,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE84A632A538729E8B800C2A /* FirebaseAILogic in Frameworks */,
-				FD9C7DD25A6A37BA2A2672CC /* FirebaseAppCheck in Frameworks */,
-				4EC600CBFECB28811F8CCF3B /* FirebaseCore in Frameworks */,
+				BE84A632A538729E8B800C2A /* FirebaseAppCheck in Frameworks */,
+				FD9C7DD25A6A37BA2A2672CC /* FirebaseCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0BFF56C875C852045F45A77F /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				FAEF0F9C95565F5FBB24BA1A /* StationLocator.swift */,
+			);
+			path = Location;
+			sourceTree = "<group>";
+		};
 		0CB697F2CDFF39D381743D84 /* shared */ = {
 			isa = PBXGroup;
 			children = (
@@ -57,17 +110,29 @@
 		159CCE502C9A1657DD705167 /* AI */ = {
 			isa = PBXGroup;
 			children = (
-				0A6F17797090320CBE82863D /* JourneyQuestionInterpreter.swift */,
+				8C46AF01F25159B485A91B42 /* OnDeviceParser.swift */,
+				1BD9CDA757BA33DC51B2695B /* PassengerTurn.swift */,
+				6320EA4A78E33B73DA68DE61 /* RerouteAssistant.swift */,
+				20C19397ABD1B29271EDB865 /* StationMatcher.swift */,
 			);
 			path = AI;
 			sourceTree = "<group>";
 		};
-		2CB27AF0FB148166EE301A0F /* Domain */ = {
+		4E4A23DCA1CBB15EF4F25206 /* Voice */ = {
 			isa = PBXGroup;
 			children = (
-				4E5A130624C49F1EE6456EAC /* Journey.swift */,
+				6259CB6CF06A72874E7E58AA /* VoiceCapture.swift */,
 			);
-			path = Domain;
+			path = Voice;
+			sourceTree = "<group>";
+		};
+		57C6B8D95C64CB4B61E33022 /* PockerRouterTests */ = {
+			isa = PBXGroup;
+			children = (
+				E34B3105F71E0989CB20A09B /* AssistantTests.swift */,
+				3926356EACC8774272DEEE35 /* RouteEngineTests.swift */,
+			);
+			path = PockerRouterTests;
 			sourceTree = "<group>";
 		};
 		5DADD98C2EB3276EA3E23208 /* PockerRouter */ = {
@@ -85,8 +150,11 @@
 				159CCE502C9A1657DD705167 /* AI */,
 				C012817622A42FE720A2138D /* App */,
 				8B7D94B613C24445605B8D9E /* Data */,
-				2CB27AF0FB148166EE301A0F /* Domain */,
+				B5E0FBA37B43CDDB3DA0410E /* Design */,
 				7A1CB852894C308ECD9A2498 /* Features */,
+				0BFF56C875C852045F45A77F /* Location */,
+				C545E293D6B0BB8829FFFBBE /* Routing */,
+				4E4A23DCA1CBB15EF4F25206 /* Voice */,
 			);
 			path = PockerRouter;
 			sourceTree = "<group>";
@@ -94,8 +162,6 @@
 		6FAD128C31EA7A663FE66B65 /* fixtures */ = {
 			isa = PBXGroup;
 			children = (
-				5BA9DEC4B4CDF957FF5BC9E7 /* demo-journey.json */,
-				D44714EA5E9B4D6D486A3D1A /* london-underground-manifest.json */,
 				13A61574A5E423343BA842FB /* london-underground-network-v1.json */,
 			);
 			path = fixtures;
@@ -104,7 +170,16 @@
 		7A1CB852894C308ECD9A2498 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				E0DD06F6328FCA4EE792F124 /* CaptureView.swift */,
+				70D3BC4BFF64C491CAB9C80F /* ConversationView.swift */,
+				84FCCF4BA5BF95DAFD7865B0 /* GuidanceView.swift */,
 				8E934D723FDC4C4D462ECC61 /* JourneyHomeView.swift */,
+				761E165E669480AA489AFF0C /* OnboardingView.swift */,
+				420CD4EB14B214E5E40D4994 /* RerouteSession.swift */,
+				F1AF25642EDD173453AA7716 /* SavedView.swift */,
+				E6D08E8E58EA8CE6402AF466 /* SettingsView.swift */,
+				45349F44AF7B85D94631A5F2 /* Sheets.swift */,
+				3E4B80044814A28FC0AD7CA6 /* StationPickerView.swift */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -112,7 +187,9 @@
 		8B7D94B613C24445605B8D9E /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				37C4FB0050E0C4AE1D970DAF /* DemoJourneyRepository.swift */,
+				1FE8C83024C3E3945D69C083 /* Connectivity.swift */,
+				DEE24730C0C6A4971DC2A415 /* DatasetStore.swift */,
+				E842BCF8E0C6DEE22E62E01C /* NetworkGraph.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -121,8 +198,18 @@
 			isa = PBXGroup;
 			children = (
 				4C929CE72A0B12BB6055DD50 /* PockerRouter.app */,
+				C6790A77DDB58CF65101219C /* PockerRouterTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B5E0FBA37B43CDDB3DA0410E /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				DE5B00F7FE4022C99BCB8FA4 /* Components.swift */,
+				CB8D8927A47442EDC34C5740 /* Theme.swift */,
+			);
+			path = Design;
 			sourceTree = "<group>";
 		};
 		B99E1D85C4F6BBB287E9D722 = {
@@ -130,6 +217,7 @@
 			children = (
 				636915010CAAED1C6D3C5F14 /* PockerRouter */,
 				5DADD98C2EB3276EA3E23208 /* PockerRouter */,
+				57C6B8D95C64CB4B61E33022 /* PockerRouterTests */,
 				8BC10188811E03EB51BF2F7F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -140,6 +228,14 @@
 				B2486C503A642F925183A78A /* PockerRouterApp.swift */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		C545E293D6B0BB8829FFFBBE /* Routing */ = {
+			isa = PBXGroup;
+			children = (
+				BAD80BFD440832DA0AB50431 /* RouteEngine.swift */,
+			);
+			path = Routing;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -160,13 +256,30 @@
 			);
 			name = PockerRouter;
 			packageProductDependencies = (
-				258455CAC77B7AC664E23DBC /* FirebaseAILogic */,
 				59B1C381A5523FA0DE510CD0 /* FirebaseAppCheck */,
 				1556FA2695947ED221389801 /* FirebaseCore */,
 			);
 			productName = PockerRouter;
 			productReference = 4C929CE72A0B12BB6055DD50 /* PockerRouter.app */;
 			productType = "com.apple.product-type.application";
+		};
+		91C34F9FE9956B94A82DCC0B /* PockerRouterTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A564C1B30EF3D0B1CA9EBB11 /* Build configuration list for PBXNativeTarget "PockerRouterTests" */;
+			buildPhases = (
+				56BD3947FCBDB32F10051666 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FC783B129E9C40383C74EDE8 /* PBXTargetDependency */,
+			);
+			name = PockerRouterTests;
+			packageProductDependencies = (
+			);
+			productName = PockerRouterTests;
+			productReference = C6790A77DDB58CF65101219C /* PockerRouterTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -197,6 +310,7 @@
 			projectRoot = "";
 			targets = (
 				57302B62ED2704B4CEEB57A6 /* PockerRouter */,
+				91C34F9FE9956B94A82DCC0B /* PockerRouterTests */,
 			);
 		};
 /* End PBXProject section */
@@ -206,8 +320,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B309231CF22CC9C38D49DB27 /* demo-journey.json in Resources */,
-				8562590AE3BD99B47ADB2AD1 /* london-underground-manifest.json in Resources */,
 				418CF2D427E1B405A95D37A3 /* london-underground-network-v1.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -237,21 +349,74 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		56BD3947FCBDB32F10051666 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6833E63ADAB0B63E064A382 /* AssistantTests.swift in Sources */,
+				E96641DEC3CE0018A3169F69 /* RouteEngineTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D515DD374D8AD39D901651D6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				35D695347C6AE928D2AA5F3A /* DemoJourneyRepository.swift in Sources */,
-				F4F714F860111C126AEF7F8D /* Journey.swift in Sources */,
+				6AFC6322E0B79CC70BAEE4B9 /* CaptureView.swift in Sources */,
+				7817BAE2EE854C07C7306307 /* Components.swift in Sources */,
+				7C26F6DC749F85EB3F70CEF2 /* Connectivity.swift in Sources */,
+				91808A51B7D4D121295DD7D7 /* ConversationView.swift in Sources */,
+				F3221F32678607BD1ECE73C1 /* DatasetStore.swift in Sources */,
+				53B7F1AC9EEFA03A8999AFDA /* GuidanceView.swift in Sources */,
 				E6BE6F7AB27B50E2B94A6D8B /* JourneyHomeView.swift in Sources */,
-				256FFECE7FBA3E7F5BD2680C /* JourneyQuestionInterpreter.swift in Sources */,
+				EFF88F2802A691815350A405 /* NetworkGraph.swift in Sources */,
+				A27CFD1A2E759967ADF15211 /* OnDeviceParser.swift in Sources */,
+				280EC32DDB0ABE495921EFAD /* OnboardingView.swift in Sources */,
+				36DFBF63D45AD9E4D2FFA8A3 /* PassengerTurn.swift in Sources */,
 				F4E3D76D5B21B522973C7CF8 /* PockerRouterApp.swift in Sources */,
+				28967FBA9EEE4C2FEDCE7C29 /* RerouteAssistant.swift in Sources */,
+				3E13EB8EFF65648BBD66A787 /* RerouteSession.swift in Sources */,
+				9C6702A57F5B43F524275A57 /* RouteEngine.swift in Sources */,
+				F8C8048F18259CD38838B5C5 /* SavedView.swift in Sources */,
+				3CA3B7354BBFA213105A292F /* SettingsView.swift in Sources */,
+				1408CA56C8B9D5C158A165ED /* Sheets.swift in Sources */,
+				54311BE63DE4F157326A3312 /* StationLocator.swift in Sources */,
+				60FF011E23153299838372B4 /* StationMatcher.swift in Sources */,
+				DE6B8A1CD4B6F7B0A80C3B73 /* StationPickerView.swift in Sources */,
+				7761F45896ACA743E0385526 /* Theme.swift in Sources */,
+				4541F548587688CF3DE81AA3 /* VoiceCapture.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		FC783B129E9C40383C74EDE8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 57302B62ED2704B4CEEB57A6 /* PockerRouter */;
+			targetProxy = B8F8123AB09BEF1A531072CD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		15055C8B905DE650F3CE93A7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.pockerrouter.ios.tests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PockerRouter.app/PockerRouter";
+			};
+			name = Release;
+		};
 		33D7305B51C863B005EBC1BB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -376,6 +541,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = PockerRouter;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Suggest a nearby Tube station to confirm as your starting point.";
@@ -388,6 +554,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.pockerrouter.ios;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
@@ -400,6 +567,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = PockerRouter;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Suggest a nearby Tube station to confirm as your starting point.";
@@ -412,12 +580,31 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.pockerrouter.ios;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
+		};
+		9F9426F54C5E6862F6748617 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.pockerrouter.ios.tests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PockerRouter.app/PockerRouter";
+			};
+			name = Debug;
 		};
 /* End XCBuildConfiguration section */
 
@@ -427,6 +614,15 @@
 			buildConfigurations = (
 				8E7CDF65DEF502FEA98366A9 /* Debug */,
 				97475875FEBA1A6E76B64AA1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A564C1B30EF3D0B1CA9EBB11 /* Build configuration list for PBXNativeTarget "PockerRouterTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9F9426F54C5E6862F6748617 /* Debug */,
+				15055C8B905DE650F3CE93A7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -458,11 +654,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 006B130FADF63EF36EC78031 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
-		};
-		258455CAC77B7AC664E23DBC /* FirebaseAILogic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 006B130FADF63EF36EC78031 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAILogic;
 		};
 		59B1C381A5523FA0DE510CD0 /* FirebaseAppCheck */ = {
 			isa = XCSwiftPackageProductDependency;

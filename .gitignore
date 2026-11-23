@@ -7,3 +7,4 @@ xcuserdata/
 GoogleService-Info.plist
 .firebase/
 *.tmp
+build/

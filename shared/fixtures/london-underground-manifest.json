@@ -3,7 +3,7 @@
   "networkId": "london-underground",
   "version": "20261117-191431",
   "generatedAt": "2026-11-17T19:14:31Z",
-  "snapshot": "/maps/london-underground/20261117-191431.json",
+  "snapshot": "/datasets/v1/cities/gb-london/networks/london-underground/versions/20261117-191431/network.json",
   "sizeBytes": 2354969,
   "sha256": "96a6cbbd67aab4713dd173bbf700d69dcdf557ed21ab2eceb1cde96ee1a8f986",
   "coverage": {
@@ -26,5 +26,6 @@
   },
   "attribution": "Powered by TfL Open Data",
   "licenceUrl": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
-  "termsUrl": "https://tfl.gov.uk/corporate/terms-and-conditions/transport-data-service"
+  "termsUrl": "https://tfl.gov.uk/corporate/terms-and-conditions/transport-data-service",
+  "cityId": "gb-london"
 }

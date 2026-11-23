@@ -5,8 +5,8 @@ import SwiftUI
 @main
 struct PockerRouterApp: App {
     init() {
-        // Firebase is optional for the local demo. Configure it only after the
-        // developer adds their app-specific GoogleService-Info.plist.
+        // Firebase is optional: configure it only when the app-specific
+        // GoogleService-Info.plist has been added (it is gitignored).
         guard Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") != nil else { return }
         #if DEBUG
         AppCheck.setAppCheckProviderFactory(AppCheckDebugProviderFactory())
@@ -20,3 +20,4 @@ struct PockerRouterApp: App {
         }
     }
 }
+

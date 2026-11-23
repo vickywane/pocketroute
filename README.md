@@ -47,7 +47,7 @@ See the [Figma designs](https://www.figma.com/design/Dv7XuIlwLCy33X7GQewOV2/Pock
 - Offline network graph of the Tube (stations, lines, branches, interchanges, walking transfers) bundled with the app and refreshed when online. Use a properly licensed source (for example TfL open data) and record its version and retrieval date.
 - AI is used only to understand the user's situation and to phrase answers. Stations, lines, directions, stop counts and routes always come from the local network graph. The model must not invent stations, platforms, disruptions or live service information.
 - Firebase AI Logic hybrid inference: Apple Foundation Models on device, with Gemini cloud fallback when a connection is available. If neither model can run, the tap-based flow (station picker, situation tiles, route cards) still works.
-- `shared/fixtures/demo-journey.json` is illustrative. A compiled TfL network snapshot is also present, but neither client currently routes against it.
+- Both clients route against the compiled TfL network snapshot. Times are distance-based estimates because the source has no timetabled run times. `shared/fixtures/demo-journey.json` is an older illustrative fixture and is not used by either client.
 
 ## Repository layout
 
@@ -59,18 +59,47 @@ See the [Figma designs](https://www.figma.com/design/Dv7XuIlwLCy33X7GQewOV2/Pock
 
 See [API layer and backend design](docs/api-layer.md) for the proposed app data API, Firebase Hosting endpoints, iOS synchronization flow, and when Cloud Functions would be warranted. See [London network data](docs/london-network-data.md) for the dataset source, build process, published Hosting paths, and refresh procedure.
 
-The compiled TfL Tube network snapshot and reproducible builder are in `shared/fixtures/london-underground-network-v1.json` and `tools/build_tfl_network.py`. The iOS app downloads the selected city map from Firebase Hosting and uses its stations in the station picker, but route calculations and displayed route choices remain illustrative. The PWA is still demo-only. See [London network data](docs/london-network-data.md) for source, attribution, coverage and rebuild instructions.
+The compiled TfL Tube network snapshot and reproducible builder are in `shared/fixtures/london-underground-network-v1.json` and `tools/build_tfl_network.py`; `tools/publish_dataset.py` stages a new build for Hosting. The iOS app bundles the snapshot, refreshes it from Firebase Hosting, and routes on it. The PWA serves the same snapshot (`apps/web/data/` links to the fixture) and routes on it with a JavaScript port of the engine. See [London network data](docs/london-network-data.md) for source, attribution, coverage and rebuild instructions.
 
 ## Run the PWA prototype
 
 Serve the static client on localhost (required for service workers and location permissions):
 
 ```sh
-cd apps/web
-python3 -m http.server 4173
+python3 tools/serve_web.py
 ```
 
-Open `http://localhost:4173` in a browser. In supported browsers, use the browser's install action to add PocketRoute to the home screen. The PWA caches its application shell for offline reopening; the current demo route data is illustrative only.
+Open `http://127.0.0.1:4173` in a browser. (`python3 -m http.server` can hang resolving the hostname on some networks; the script avoids that.) In supported browsers, use the browser's install action to add PocketRoute to the home screen. The service worker caches the app shell and the Tube map for offline use and refreshes them in the background, so a new deploy reaches users on their next launch. Bump `CACHE_VERSION` in `apps/web/sw.js` when the list of shell files changes.
+
+## Deploy the PWA
+
+The PWA is live at **https://pocketroute-pwa.web.app**. It's a second Firebase Hosting site (`pocketroute-pwa`) in the `pockerrouter-2026` project, separate from the map data site (`pockerrouter-2026.web.app`), so app and data deploys don't affect each other.
+
+Deploy the app only:
+
+```sh
+npx firebase-tools deploy --only hosting:pocketroute-pwa
+```
+
+The deploy first runs `tools/build_web.py`, which copies `apps/web` into `build/web` (git-ignored) with the real Tube map file in place of the `apps/web/data/` symlink, which Hosting wouldn't follow. Tests are left out of the build. `firebase.json` serves `/`, `index.html`, `sw.js` and the manifest with `Cache-Control: no-cache` so phones always pick up a new version; other files use Hosting's default caching and are refreshed by the service worker.
+
+Use `npx firebase-tools` (or a Firebase CLI installed through npm) rather than the standalone `firebase` binary if that binary was built for Intel and fails on Apple silicon. Run `npx firebase-tools login` once if you aren't signed in.
+
+### Install on a phone
+
+1. Open https://pocketroute-pwa.web.app.
+2. **iPhone (Safari):** Share → **Add to Home Screen**. **Android (Chrome):** menu → **Install app**.
+3. Open it once with signal so it saves the app and the Tube map, then try it in Airplane mode.
+
+## Tests
+
+```sh
+cd apps/ios && xcodegen generate && xcodebuild test -project PockerRouter.xcodeproj -scheme PockerRouter -destination 'platform=iOS Simulator,name=iPhone 17'
+```
+
+```sh
+node --test apps/web/
+```
 
 ## Project links
 
@@ -85,4 +114,4 @@ Open `http://localhost:4173` in a browser. In supported browsers, use the browse
 4. Open the generated `apps/ios/PockerRouter.xcodeproj` in Xcode, select a physical Apple Intelligence-capable iPhone, and run.
 5. Generate the Xcode project with `cd apps/ios && xcodegen generate` after changing `project.yml`.
 
-The scaffold does not include Firebase credentials, production App Check attestation, a TfL network data integration, or a claim that the demo fixture represents a valid route.
+The repository does not include Firebase credentials or production App Check attestation. Route times are estimates from the static TfL map, not live service information.

@@ -96,8 +96,12 @@ def station_id(record: dict) -> str | None:
 
 
 def clean_station_name(name: str) -> str:
-    suffix = " Underground Station"
-    return name[: -len(suffix)] if name.endswith(suffix) else name
+    """Strip TfL's suffixes, e.g. "Bank Underground Station", "Paddington (H&C Line)-Underground"."""
+    name = name.replace("&amp;", "&")
+    for suffix in (" Underground Station", "-Underground", " Underground"):
+        if name.endswith(suffix):
+            name = name[: -len(suffix)]
+    return name.strip()
 
 
 def main() -> int:
@@ -144,6 +148,10 @@ def main() -> int:
             route_call_count += 1
             if not isinstance(response, dict):
                 raise RuntimeError(f"Unexpected route-sequence response for {line['id']} {direction}")
+            for stop in response.get("stations", []):
+                identifier = station_id(stop)
+                if identifier:
+                    stops_by_id.setdefault(identifier, stop)
             for route_index, route in enumerate(response.get("orderedLineRoutes", [])):
                 ids = [str(value) for value in route.get("naptanIds", []) if value]
                 if len(ids) < 2:
@@ -154,13 +162,9 @@ def main() -> int:
                     "lineId": line["id"],
                     "direction": direction,
                     "serviceType": route.get("serviceType", "Regular"),
-                    "name": route.get("name", line["name"]),
+                    "name": route.get("name", line["name"]).replace("&harr;", "↔"),
                     "stationIds": ids,
                 })
-                for index, stop in enumerate(response.get("stations", [])):
-                    identifier = station_id(stop)
-                    if identifier:
-                        stops_by_id.setdefault(identifier, stop)
                 for index, (from_id, to_id) in enumerate(zip(ids, ids[1:])):
                     key = (route_id, index, from_id, to_id)
                     if key in segment_keys:
@@ -394,8 +398,9 @@ def main() -> int:
                 "transferTimeSeconds": None,
             })
 
-    generated_at = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-    version = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d-%H%M%S")
+    now = dt.datetime.now(dt.timezone.utc).replace(microsecond=0)
+    generated_at = now.isoformat().replace("+00:00", "Z")
+    version = now.strftime("%Y%m%d-%H%M%S")
     dataset = {
         "schemaVersion": 1,
         "networkId": "london-underground",
