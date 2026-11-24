@@ -12,6 +12,7 @@ struct PockerRouterApp: App {
         AppCheck.setAppCheckProviderFactory(AppCheckDebugProviderFactory())
         #endif
         FirebaseApp.configure()
+        CloudAssist.startRemoteConfig()
     }
 
     var body: some Scene {

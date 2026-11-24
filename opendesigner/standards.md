@@ -4,7 +4,7 @@
 
 **Follow these rules when you build.** They come from sources marked non-negotiable, their values are locked, and `engine.py review` checks the ones it can.
 
-This system follows OpenDesigner's house standards v4: 341 house rules.
+This system follows OpenDesigner's house standards v4: 340 house rules and 1 overridden.
 
 **When to animate**
 - **Decide whether to animate first.** Before choosing any tool, easing or duration, decide whether the element should animate at all (how often it is seen) and name its purpose; if either check fails, ship no animation. Values: decision-order `frequency, then purpose; only then tool, properties, easing and duration`. (STD-when-to-animate-01)
@@ -452,9 +452,6 @@ This system follows OpenDesigner's house standards v4: 341 house rules.
 - **Color on solid layers.** Put color on a solid layer, not on a translucent foreground surface. (STD-visual-details-21, should)
   - Why: The source puts it with vibrancy, which keeps text legible over changing backgrounds; it gives no separate reason.
   - Sources: eks-skills-apple-design-skill.
-- **Colors adapt to light and dark.** Make interface colors adapt to light and dark mode: give each color role a light value and a dark value. (STD-visual-details-24, should)
-  - Why: The source lists colors that adapt to light and dark as part of the craft that builds trust.
-  - Sources: eks-skills-apple-design-skill.
 - **Restrained look with no project.** When prototyping with no project to draw tokens from (an empty directory, or the person is just exploring), use a restrained default look: neutral grays, one accent color and the system font stack. Values: grays `neutral`; accents `one`; font `system font stack`. (STD-visual-details-25)
   - Why: The source gives no reason; with no project there are no tokens for the variants to use [inferred].
   - Sources: eks-skills-prototype-skill.
@@ -545,6 +542,9 @@ This system follows OpenDesigner's house standards v4: 341 house rules.
 - **Never pure white with pure black.** A product that uses pure white (#FFFFFF) as a surface, text or icon colour never also uses pure black (#000000), and the reverse. Pair pure white with an off-black (such as #111111) and pure black with an off-white. Transparent black or white in shadows, scrims and overlays does not count. Values: pure-white `#FFFFFF`; pure-black `#000000`. (STD-visual-details-66)
   - Why: The owner's rule for every project: the two extremes together are harsh and cause problems later.
   - Sources: owner-house-rules.
+- ~~Colors adapt to light and dark~~ Overridden in this project: "Owner: remove the dark mode from designs (light only, Figma and both apps)" (D-0021). The house rule: Make interface colors adapt to light and dark mode: give each color role a light value and a dark value. (STD-visual-details-24).
+  - Why: The source lists colors that adapt to light and dark as part of the craft that builds trust.
+  - Sources: eks-skills-apple-design-skill.
 
 **Process, review and taste**
 - **Motion that merely runs is not done.** Never ship motion, AI-written or not, just because it runs: treat a transition that works but feels sluggish, lands from the wrong origin, fires too often or drops frames as a regression, and keep flagging it until it meets every approval criterion. (STD-process-review-taste-01)

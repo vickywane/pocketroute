@@ -69,6 +69,18 @@ struct KeywordParser: Sendable {
     private static let closureWords = ["closed", "not running", "isnt running", "arent running", "no service", "no trains",
                                        "suspended", "shut", "part closure", "out of service", "not working"]
 
+    /// Whether the message reports anything closed or to avoid at all.
+    static func reportsClosure(_ text: String) -> Bool {
+        let normal = " " + StationMatcher.normalise(text) + " "
+        return (closureWords + ["avoid", "avoiding", "not via", "no", "blocked", "cant use", "not that"]).contains { normal.contains(" \($0) ") }
+    }
+
+    /// Whether the message asks for fewer changes in words the rules know.
+    static func mentionsChanges(_ text: String) -> Bool {
+        let normal = " " + StationMatcher.normalise(text) + " "
+        return [" change", " changing", " direct ", " one train "].contains { normal.contains($0) }
+    }
+
     func parse(_ text: String) -> ParsedTurn {
         let normal = StationMatcher.expandStreet(StationMatcher.normalise(text))
         let words = normal.split(separator: " ").map(String.init)
@@ -88,7 +100,7 @@ struct KeywordParser: Sendable {
         }
 
         // Preferences.
-        if hasAny(["step free", "stepfree", "lift", "lifts", "wheelchair", "pushchair", "buggy", "pram", "no stairs", "cant do stairs", "no escalators"]) {
+        if hasAny(["step free", "stepfree", "lift", "lifts", "wheelchair", "pushchair", "buggy", "pram", "no stairs", "without stairs", "no steps", "without steps", "cant do stairs", "no escalators"]) {
             turn.stepFree = true
         }
         if hasAny(["no walking", "no walk", "dont want to walk", "cant walk", "not walking", "rather not walk"]) {
@@ -141,7 +153,7 @@ struct KeywordParser: Sendable {
                 continue // a direction or a stop on the way, not a goal
             } else if ["at", "from", "in", "reached", "near", "outside"].contains(last ?? "") {
                 if turn.currentStation == nil { turn.currentStation = name(mention) }
-            } else if (["to", "for", "reach"].contains(last ?? "") && cue.suffix(2) != ["change", "to"])
+            } else if (["to", "for", "reach", "need", "needs"].contains(last ?? "") && cue.suffix(2) != ["change", "to"])
                         || cue.contains("going") || cue.contains("heading") {
                 if turn.destination == nil { turn.destination = name(mention) }
             } else if turn.unassignedStation == nil {
@@ -149,8 +161,8 @@ struct KeywordParser: Sendable {
             }
         }
         // "Camden to Warren Street": two bare names, first is here.
-        if turn.currentStation == nil, turn.destination == nil, mentions.count == 2, consumed.isEmpty, turn.closedStations.isEmpty,
-           words[mentions[0].range.upperBound..<mentions[1].range.lowerBound].contains("to") {
+        if turn.currentStation == nil, turn.destination == nil || turn.unassignedStation != nil, mentions.count == 2, consumed.isEmpty,
+           turn.closedStations.isEmpty, words[mentions[0].range.upperBound..<mentions[1].range.lowerBound].contains("to") {
             turn.currentStation = name(mentions[0])
             turn.destination = name(mentions[1])
             turn.unassignedStation = nil

@@ -1,12 +1,13 @@
 import SwiftUI
 
 /// Only real choices live here: account, which city's map, whether it updates
-/// itself, step-free routing, and the TfL data credit.
+/// itself, step-free routing, which models read messages, and the TfL data credit.
 struct SettingsView: View {
     let graph: NetworkGraph
     @Environment(DatasetStore.self) private var store
     @AppStorage(Preference.keepMapUpdated) private var keepMapUpdated = true
     @AppStorage(Preference.stepFree) private var stepFree = false
+    @AppStorage(Preference.cloudAssist) private var cloudAssist = false
     @State private var accountIntent: String?
     @State private var showingCityPicker = false
 
@@ -41,6 +42,16 @@ struct SettingsView: View {
                 SettingsSection(title: "Routes") {
                     SettingsRow(icon: "figure.roll", title: "Step-free changes only") {
                         Toggle("Step-free changes only", isOn: $stepFree).labelsHidden().tint(Theme.accent)
+                    }
+                }
+
+                SettingsSection(title: "Assistant") {
+                    SettingsRow(icon: "iphone", title: "Apple Intelligence", subtitle: AssistantAvailability.current.title) { EmptyView() }
+                    if CloudAssist.isConfigured {
+                        InsetDivider(leading: 64)
+                        SettingsRow(icon: "sparkles", title: "Use Gemini when online") {
+                            Toggle("Use Gemini when online", isOn: $cloudAssist).labelsHidden().tint(Theme.accent)
+                        }
                     }
                 }
 

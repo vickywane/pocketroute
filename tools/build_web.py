@@ -16,7 +16,7 @@ OUTPUT = ROOT / "build/web"
 if OUTPUT.exists():
     shutil.rmtree(OUTPUT)
 shutil.copytree(SOURCE, OUTPUT, symlinks=False,
-                ignore=shutil.ignore_patterns("*.test.mjs", ".DS_Store"))
+                ignore=shutil.ignore_patterns("*.test.mjs", ".DS_Store", "firebase-config.json"))
 
 network = OUTPUT / "data/london-underground-network-v1.json"
 if not network.is_file() or network.is_symlink():

@@ -15,6 +15,12 @@ An AI-powered re-routing assistant for London Underground passengers who suddenl
 
 Nothing here is invented: these come from the person's own words and README, are recorded as assumed, and are confirmed once. The principles are drafted from the goals (Q-brand-07).
 
+<!-- od:keep -->
+- **Mission:** nobody should be stranded underground because their journey changed and their phone can't get online.
+- **Purpose:** answer one question when a plan breaks: "From where I am now, how do I get to where I'm going?"
+- **Goals:** a usable answer in seconds, one-handed, with no signal; never a made-up station, route or service status.
+<!-- /od:keep -->
+
 ## Phase
 
 **Being built** (read from the repo: code, but no deploy settings yet). *(assumed, not confirmed yet)*
@@ -24,6 +30,10 @@ What comes first in this phase: the sketch, then the areas the screens being bui
 ## Audience
 
 People who use it now and then, often on a phone.
+
+<!-- od:keep -->
+London Underground passengers whose train is held, terminates early, skips a stop or whose line closes, often in a deep-level station with no signal. They use it now and then, under stress, on a phone.
+<!-- /od:keep -->
 
 ## Users
 
@@ -37,13 +47,29 @@ Not researched yet. The user research step (references/research.md) fills this i
 - **The gap** (what none of them does well, and this product can): Not enough information.
 - **Industry conventions** (the words, layouts and habits its users already know): Not enough information.
 
+<!-- od:keep -->
+- **Competitors:** Citymapper, Google Maps, TfL Go.
+- **Their shared pattern:** plan a journey up front from live data.
+- **The gap:** when that plan breaks underground, they can't refresh. PocketRoute re-routes from an offline copy of the network and takes the passenger's own report as the source of truth for current conditions.
+<!-- /od:keep -->
+
 ## Positioning
 
 Not enough information. The positioning step fills this in: engine.py research positioning draft.
 
+<!-- od:keep -->
+Not a journey planner. The thing you open when your plan breaks and you can't get online to fix it.
+<!-- /od:keep -->
+
 ## Surfaces
 
 - app: Operate mode (density set by the Density dial; no hero; cards only to group related data)
+
+<!-- od:keep -->
+- iOS app (iOS 26+, SwiftUI)
+- Installable PWA (https://pocketroute-pwa.web.app)
+- Light theme only (owner decision, 24 Nov 2026).
+<!-- /od:keep -->
 
 ## Memorable Thing
 
@@ -53,16 +79,34 @@ Not recorded yet (Q-brand-02).
 
 Not recorded yet (Q-brand-07).
 
+<!-- od:keep -->
+1. Built for stress and one hand.
+2. Conversation, not menus.
+3. No signal assumed.
+4. Private by default: messages leave the device only if the passenger turns on Gemini.
+5. Honest about limits.
+<!-- /od:keep -->
+
 ## Constraints
 
 - Accessibility: WCAG 2.2 AA
-- Platforms: ios, pwa
+- Platforms: ios
+
+<!-- od:keep -->
+- Route facts come only from the saved TfL map and the deterministic route engine, never from a model.
+<!-- /od:keep -->
 
 ## Scope
 
 **In:** not recorded yet
 
 **Out:** not recorded yet
+
+<!-- od:keep -->
+**In:** London Underground; offline re-routing; typed, spoken and tapped input; step-by-step guidance.
+
+**Out:** live service status, other cities and modes, accounts and sync, dark mode.
+<!-- /od:keep -->
 
 ## Team and Governance
 

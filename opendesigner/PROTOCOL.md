@@ -3,7 +3,7 @@
 How work runs in this project. Every agent follows it. Written by OpenDesigner on 2026-11-16; edit it to fit.
 
 <!-- od:now: the engine rewrites this block after each command that changes the system; engine.py status prints it -->
-**Now:** step 1 Discover. **Waiting for the owner:** a yes at gate 1 on the brief; whether to write the hand-off for later sessions (AGENTS.md and a CLAUDE.md that imports it). **Next:** ask once, then engine.py handoff yes --quote "<their words>" (or handoff no). Last engine command: `build` (2026-11-16).
+**Now:** step 1 Discover. **Waiting for the owner:** a yes at gate 1 on the brief; whether to write the hand-off for later sessions (AGENTS.md and a CLAUDE.md that imports it). **Next:** ask once, then engine.py handoff yes --quote "<their words>" (or handoff no). Last engine command: `design-md` (2026-11-24).
 <!-- /od:now -->
 
 After a context reset or in a new session, read the Now line first. The engine keeps it current; everything else here is yours to edit.

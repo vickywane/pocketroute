@@ -25,9 +25,9 @@ spacing:
 - **Screens:** app (screens where people get work done)
 - **Runs on:** ios
 - **Feel:** calm, trustworthy (deferential, minimal, serious, authoritative)
-- **Brand color:** Your brand color (#0E5E58) is on the buttons exactly, with white text that reads clearly on it. In dark mode, buttons use a lighter shade of it (#4B9089), so their dark text reads clearly.
+- **Brand color:** Your brand color (#0E5E58) is on the buttons exactly, with white text that reads clearly on it.
 - **Decided:** 6 answers you gave, 5 picked for you; everything else uses sourced defaults
-- **Standards:** 341 house standards followed (locked, house standards v4); see the Standards section
+- **Standards:** 340 house standards followed (locked, house standards v4), 1 overridden by you; see the Standards section
 - **Next:** zoom into Colors, Layout, Elevation & Depth, or stop here: each level works
 - **Licence risks:** none found
 
@@ -80,7 +80,7 @@ No principles recorded yet (Q-brand-07). Until they are, the dials act as the ti
 | Shapes | broad | Q-shape-05, Q-shape-02, Q-shape-03 |
 | Components | sketch | Q-comp-01, Q-comp-02, Q-state-01 |
 | Motion | sketch | Q-motion-01 |
-| Modes and Themes | sketch | Q-theme-03 |
+| Modes and Themes | defined | Q-theme-02, Q-theme-04 |
 | Iconography and Imagery | sketch | Q-icon-01, Q-icon-02, Q-icon-06 |
 | Content and Voice | sketch | Q-voice-01, Q-voice-02, Q-voice-03 |
 | Accessibility | sketch | Q-aud-02, Q-aud-03, Q-aud-04 |
@@ -113,7 +113,7 @@ Designers: primary or brand accent · Code: `color.bg.accent`
 
 <details><summary>More</summary>
 
-**Intent.** Brand color `#0e5e58` drives the accent ramp's hue; the Colorfulness dial (36) sets its chroma (scheme tonalSpot, peak HCT chroma 31.41). The brand's role is **reserved-accent** and it sits closest to accent step 9. Your brand color #0E5E58 is on the buttons exactly (white text on it reads at 7.61:1). In dark mode, buttons use #4B9089, a lighter shade of it, because the dark text on dark-mode buttons would read at only 2.40:1 on the exact color.
+**Intent.** Brand color `#0e5e58` drives the accent ramp's hue; the Colorfulness dial (36) sets its chroma (scheme tonalSpot, peak HCT chroma 31.41). The brand's role is **reserved-accent** and it sits closest to accent step 9. Your brand color #0E5E58 is on the buttons exactly (white text on it reads at 7.61:1).
 
 **How ramps are built.** Each hue gets twelve steps in OKLCH, placed by contrast. Step 8 reaches at least 3:1 (edges and focus). Steps 10 and 11 reach the text minimum on backgrounds 1-4. Step 12 reaches at least 7:1. Steps 2-6 are spaced evenly in lightness between step 1 and step 7. Light and dark ramps are solved separately. Dark solids are lighter and carry dark text (dark mode is a separate mapping, never an inversion). Text minimum: 4.5:1 (WCAG 2.2 AA).
 
@@ -147,77 +147,77 @@ Designers: primary or brand accent · Code: `color.bg.accent`
 
 | Token | Light | Dark | Use |
 |---|---|---|---|
-| `color.bg.accent.bold` | `#0e5e58` | `#4b9089` | Solid accent fill. |
-| `color.bg.accent.bold-hover` | `#06524d` | `#589d96` | Hover: one step, at least 1.15:1 from the solid (DC-L01-17). |
-| `color.bg.accent.bold-pressed` | `#004a45` | `#62a7a0` | Pressed: at least 1.3:1 from the solid. |
-| `color.bg.accent.subtle` | `#e2eeec` | `#1e2928` | Selected rows, accent badges. |
-| `color.bg.accent.subtle-hover` | `#d5e6e4` | `#213230` | Hover on accent subtle fills. |
-| `color.bg.accent.subtle-pressed` | `#c7dfdc` | `#233c39` | Pressed accent subtle fills. |
-| `color.bg.action.primary` | `#0e5e58` | `#4b9089` | Primary action. One per view (DC-L15-03, L15 P08). |
-| `color.bg.action.primary-hover` | `#06524d` | `#589d96` | Hover: one step, at least 1.15:1 from the solid (DC-L01-17). |
-| `color.bg.action.primary-pressed` | `#004a45` | `#62a7a0` | Pressed: at least 1.3:1 from the solid. |
-| `color.bg.brand` | `#0e5e58` | `#4b9089` | Brand fill for signature surfaces; carries text.on-brand (brandAnchor rule, DC-L01-09). |
-| `color.bg.danger.bold` | `#b95850` | `#bd6e65` | Danger solid fill. |
-| `color.bg.danger.bold-hover` | `#a84e46` | `#cc7b72` | Hover: one step, at least 1.15:1 from the solid (DC-L01-17). |
-| `color.bg.danger.bold-pressed` | `#9f463e` | `#d6847b` | Pressed: at least 1.3:1 from the solid. |
-| `color.bg.danger.subtle` | `#fbe7e5` | `#332422` | Danger banner and badge background. |
-| `color.bg.disabled` | `#e8ecf3` | `#2a2e35` | Disabled control fill. |
-| `color.bg.field` | `#ffffff` | `#22252b` | Text field fill: outlined fields sit on the raised surface (Q-form-01). |
-| `color.bg.info.bold` | `#057cb6` | `#418bbb` | Info solid fill. |
-| `color.bg.info.bold-hover` | `#0070a5` | `#4f98c9` | Hover: one step, at least 1.15:1 from the solid (DC-L01-17). |
-| `color.bg.info.bold-pressed` | `#006799` | `#59a2d3` | Pressed: at least 1.3:1 from the solid. |
-| `color.bg.info.subtle` | `#dfedf8` | `#1c2932` | Info banner and badge background. |
-| `color.bg.inverse` | `#222428` | `#e6e9ee` | Tooltips and toasts: the inverted surface. |
-| `color.bg.neutral.subtle` | `#e8ecf3` | `#32363f` | Secondary buttons, chips, hovered rows. |
-| `color.bg.neutral.subtle-hover` | `#dee3ec` | `#3a3f49` | Hover: +1 step (DC-L01-17). |
-| `color.bg.neutral.subtle-pressed` | `#d5dbe6` | `#424854` | Pressed or selected: +2 steps (DC-L01-17). |
-| `color.bg.success.bold` | `#318549` | `#519160` | Success solid fill. |
-| `color.bg.success.bold-hover` | `#297840` | `#5e9e6c` | Hover: one step, at least 1.15:1 from the solid (DC-L01-17). |
-| `color.bg.success.bold-pressed` | `#1e7039` | `#68a876` | Pressed: at least 1.3:1 from the solid. |
-| `color.bg.success.subtle` | `#e1efe3` | `#1f2a21` | Success banner and badge background. |
-| `color.bg.warning.bold` | `#e7b55b` | `#dfb772` | Warning solid fill. |
-| `color.bg.warning.bold-hover` | `#d5a652` | `#f0c781` | Hover: one step, at least 1.15:1 from the solid (DC-L01-17). |
-| `color.bg.warning.bold-pressed` | `#ca9c47` | `#fdd48e` | Pressed: at least 1.3:1 from the solid. |
-| `color.bg.warning.subtle` | `#f3eadd` | `#2d261b` | Warning banner and badge background. |
-| `color.border.accent` | `#5e8f8a` | `#528c86` | Selected card or accent outline. |
-| `color.border.danger` | `#bc726a` | `#b46f67` | Danger boundary, for example an invalid field (3:1). |
-| `color.border.default` | `#7f8796` | `#79808f` | Outlines (strong rules). |
-| `color.border.focus` | `#0e5e58` | `#78b7b0` | Focus ring (3:1 against every surface, DC-L04-09). |
-| `color.border.info` | `#4a8cb8` | `#4a88b1` | Info boundary, for example an invalid field (3:1). |
-| `color.border.input` | `#7f8796` | `#79808f` | Text field and select borders (3:1, DC-L01-16). |
-| `color.border.separator` | `#d5dbe6` | `#3a3f49` | Hairlines between table rows and list items, lighter than border.subtle; decorative, so never the only cue (DC-L23-05). |
-| `color.border.strong` | `#7f8796` | `#79808f` | Boundaries that are the only cue: inputs, checkboxes, switches (3:1, WCAG 1.4.11). |
-| `color.border.subtle` | `#c2cad8` | `#424854` | Dividers (strong rules: Warmth 0-33, S-L06-067 inverse). |
-| `color.border.success` | `#599365` | `#578d63` | Success boundary, for example an invalid field (3:1). |
-| `color.border.warning` | `#a48042` | `#9d7c42` | Warning boundary, for example an invalid field (3:1). |
-| `color.icon.accent` | `#0d4b46` | `#78b7b0` | Selected and interactive icons. |
-| `color.icon.default` | `#505765` | `#a3abbb` | Icons beside text; same color as secondary text (DC-L05-08). |
-| `color.icon.on-accent` | `#ffffff` | `#141518` | Icons on solid accent fills. |
-| `color.icon.subtle` | `#5c6474` | `#8d96a7` | Decorative icons. |
-| `color.overlay.scrim` | `#222428 @0.45` | `#000000` | Modal backdrop (DC-L04-18; Q-depth-06). |
-| `color.surface.base` | `#fcfdff` | `#1b1d21` | The page background. |
-| `color.surface.nav` | `#f1f4fa` | `#141518` | Recessive navigation, dimmer than content (Linear 2026, S-L06-067). |
-| `color.surface.overlay` | `#ffffff` | `#2a2e35` | Menus, popovers, dialogs; always with elevation.floating or elevation.overlay. |
-| `color.surface.raised` | `#ffffff` | `#22252b` | Cards and panels on the page. |
-| `color.surface.sunken` | `#f1f4fa` | `#141518` | Wells, code blocks, page gutters. |
-| `color.text.accent` | `#0d4b46` | `#78b7b0` | Accent text and selected labels. |
-| `color.text.danger` | `#8d4039` | `#e6988f` | Danger text and icons; pair with an icon or label (DC-L01-15). |
-| `color.text.disabled` | `#7f8796` | `#79808f` | Disabled labels; exempt from contrast minimums (WCAG 1.4.3 exception). |
-| `color.text.info` | `#005c8a` | `#70b3e1` | Info text and icons; pair with an icon or label (DC-L01-15). |
-| `color.text.inverse` | `#ffffff` | `#141518` | Text on color.bg.inverse (tooltips, toasts). |
-| `color.text.link` | `#0d4b46` | `#78b7b0` | Links. Underline them in running text so color is not the only cue. |
-| `color.text.on-accent` | `#ffffff` | `#141518` | Text and icons on color.bg.accent.bold* (auto-picked light or dark, S-L06-094). |
-| `color.text.on-action` | `#ffffff` | `#141518` | Text on the primary action fill. |
-| `color.text.on-brand` | `#ffffff` | `#141518` | Text on color.bg.brand. |
-| `color.text.on-danger` | `#ffffff` | `#141518` | Text on bg.danger.bold. |
-| `color.text.on-info` | `#ffffff` | `#141518` | Text on bg.info.bold. |
-| `color.text.on-success` | `#ffffff` | `#141518` | Text on bg.success.bold. |
-| `color.text.on-warning` | `#222428` | `#141518` | Text on bg.warning.bold. |
-| `color.text.primary` | `#222428` | `#e6e9ee` | Body copy, headings, labels (guaranteed >= 7:1 on steps 1-5). |
-| `color.text.secondary` | `#505765` | `#a3abbb` | Supporting text (guaranteed >= the text minimum on surfaces and neutral fills 1-4). |
-| `color.text.success` | `#1d6333` | `#7eba8a` | Success text and icons; pair with an icon or label (DC-L01-15). |
-| `color.text.tertiary` | `#505765` | `#a3abbb` | Captions and placeholders: the same grey as secondary, so text keeps three greys (primary, secondary, disabled; owner, 2026-11-05). |
-| `color.text.warning` | `#845d03` | `#f8d191` | Warning text and icons; pair with an icon or label (DC-L01-15). |
+| `color.bg.accent.bold` | `#0e5e58` | `same` | Solid accent fill. |
+| `color.bg.accent.bold-hover` | `#06524d` | `same` | Hover: one step, at least 1.15:1 from the solid (DC-L01-17). |
+| `color.bg.accent.bold-pressed` | `#004a45` | `same` | Pressed: at least 1.3:1 from the solid. |
+| `color.bg.accent.subtle` | `#e2eeec` | `same` | Selected rows, accent badges. |
+| `color.bg.accent.subtle-hover` | `#d5e6e4` | `same` | Hover on accent subtle fills. |
+| `color.bg.accent.subtle-pressed` | `#c7dfdc` | `same` | Pressed accent subtle fills. |
+| `color.bg.action.primary` | `#0e5e58` | `same` | Primary action. One per view (DC-L15-03, L15 P08). |
+| `color.bg.action.primary-hover` | `#06524d` | `same` | Hover: one step, at least 1.15:1 from the solid (DC-L01-17). |
+| `color.bg.action.primary-pressed` | `#004a45` | `same` | Pressed: at least 1.3:1 from the solid. |
+| `color.bg.brand` | `#0e5e58` | `same` | Brand fill for signature surfaces; carries text.on-brand (brandAnchor rule, DC-L01-09). |
+| `color.bg.danger.bold` | `#b95850` | `same` | Danger solid fill. |
+| `color.bg.danger.bold-hover` | `#a84e46` | `same` | Hover: one step, at least 1.15:1 from the solid (DC-L01-17). |
+| `color.bg.danger.bold-pressed` | `#9f463e` | `same` | Pressed: at least 1.3:1 from the solid. |
+| `color.bg.danger.subtle` | `#fbe7e5` | `same` | Danger banner and badge background. |
+| `color.bg.disabled` | `#e8ecf3` | `same` | Disabled control fill. |
+| `color.bg.field` | `#ffffff` | `same` | Text field fill: outlined fields sit on the raised surface (Q-form-01). |
+| `color.bg.info.bold` | `#057cb6` | `same` | Info solid fill. |
+| `color.bg.info.bold-hover` | `#0070a5` | `same` | Hover: one step, at least 1.15:1 from the solid (DC-L01-17). |
+| `color.bg.info.bold-pressed` | `#006799` | `same` | Pressed: at least 1.3:1 from the solid. |
+| `color.bg.info.subtle` | `#dfedf8` | `same` | Info banner and badge background. |
+| `color.bg.inverse` | `#222428` | `same` | Tooltips and toasts: the inverted surface. |
+| `color.bg.neutral.subtle` | `#e8ecf3` | `same` | Secondary buttons, chips, hovered rows. |
+| `color.bg.neutral.subtle-hover` | `#dee3ec` | `same` | Hover: +1 step (DC-L01-17). |
+| `color.bg.neutral.subtle-pressed` | `#d5dbe6` | `same` | Pressed or selected: +2 steps (DC-L01-17). |
+| `color.bg.success.bold` | `#318549` | `same` | Success solid fill. |
+| `color.bg.success.bold-hover` | `#297840` | `same` | Hover: one step, at least 1.15:1 from the solid (DC-L01-17). |
+| `color.bg.success.bold-pressed` | `#1e7039` | `same` | Pressed: at least 1.3:1 from the solid. |
+| `color.bg.success.subtle` | `#e1efe3` | `same` | Success banner and badge background. |
+| `color.bg.warning.bold` | `#e7b55b` | `same` | Warning solid fill. |
+| `color.bg.warning.bold-hover` | `#d5a652` | `same` | Hover: one step, at least 1.15:1 from the solid (DC-L01-17). |
+| `color.bg.warning.bold-pressed` | `#ca9c47` | `same` | Pressed: at least 1.3:1 from the solid. |
+| `color.bg.warning.subtle` | `#f3eadd` | `same` | Warning banner and badge background. |
+| `color.border.accent` | `#5e8f8a` | `same` | Selected card or accent outline. |
+| `color.border.danger` | `#bc726a` | `same` | Danger boundary, for example an invalid field (3:1). |
+| `color.border.default` | `#7f8796` | `same` | Outlines (strong rules). |
+| `color.border.focus` | `#0e5e58` | `same` | Focus ring (3:1 against every surface, DC-L04-09). |
+| `color.border.info` | `#4a8cb8` | `same` | Info boundary, for example an invalid field (3:1). |
+| `color.border.input` | `#7f8796` | `same` | Text field and select borders (3:1, DC-L01-16). |
+| `color.border.separator` | `#d5dbe6` | `same` | Hairlines between table rows and list items, lighter than border.subtle; decorative, so never the only cue (DC-L23-05). |
+| `color.border.strong` | `#7f8796` | `same` | Boundaries that are the only cue: inputs, checkboxes, switches (3:1, WCAG 1.4.11). |
+| `color.border.subtle` | `#c2cad8` | `same` | Dividers (strong rules: Warmth 0-33, S-L06-067 inverse). |
+| `color.border.success` | `#599365` | `same` | Success boundary, for example an invalid field (3:1). |
+| `color.border.warning` | `#a48042` | `same` | Warning boundary, for example an invalid field (3:1). |
+| `color.icon.accent` | `#0d4b46` | `same` | Selected and interactive icons. |
+| `color.icon.default` | `#505765` | `same` | Icons beside text; same color as secondary text (DC-L05-08). |
+| `color.icon.on-accent` | `#ffffff` | `same` | Icons on solid accent fills. |
+| `color.icon.subtle` | `#5c6474` | `same` | Decorative icons. |
+| `color.overlay.scrim` | `#222428 @0.45` | `same` | Modal backdrop (DC-L04-18; Q-depth-06). |
+| `color.surface.base` | `#fcfdff` | `same` | The page background. |
+| `color.surface.nav` | `#f1f4fa` | `same` | Recessive navigation, dimmer than content (Linear 2026, S-L06-067). |
+| `color.surface.overlay` | `#ffffff` | `same` | Menus, popovers, dialogs; always with elevation.floating or elevation.overlay. |
+| `color.surface.raised` | `#ffffff` | `same` | Cards and panels on the page. |
+| `color.surface.sunken` | `#f1f4fa` | `same` | Wells, code blocks, page gutters. |
+| `color.text.accent` | `#0d4b46` | `same` | Accent text and selected labels. |
+| `color.text.danger` | `#8d4039` | `same` | Danger text and icons; pair with an icon or label (DC-L01-15). |
+| `color.text.disabled` | `#7f8796` | `same` | Disabled labels; exempt from contrast minimums (WCAG 1.4.3 exception). |
+| `color.text.info` | `#005c8a` | `same` | Info text and icons; pair with an icon or label (DC-L01-15). |
+| `color.text.inverse` | `#ffffff` | `same` | Text on color.bg.inverse (tooltips, toasts). |
+| `color.text.link` | `#0d4b46` | `same` | Links. Underline them in running text so color is not the only cue. |
+| `color.text.on-accent` | `#ffffff` | `same` | Text and icons on color.bg.accent.bold* (auto-picked light or dark, S-L06-094). |
+| `color.text.on-action` | `#ffffff` | `same` | Text on the primary action fill. |
+| `color.text.on-brand` | `#ffffff` | `same` | Text on color.bg.brand. |
+| `color.text.on-danger` | `#ffffff` | `same` | Text on bg.danger.bold. |
+| `color.text.on-info` | `#ffffff` | `same` | Text on bg.info.bold. |
+| `color.text.on-success` | `#ffffff` | `same` | Text on bg.success.bold. |
+| `color.text.on-warning` | `#222428` | `same` | Text on bg.warning.bold. |
+| `color.text.primary` | `#222428` | `same` | Body copy, headings, labels (guaranteed >= 7:1 on steps 1-5). |
+| `color.text.secondary` | `#505765` | `same` | Supporting text (guaranteed >= the text minimum on surfaces and neutral fills 1-4). |
+| `color.text.success` | `#1d6333` | `same` | Success text and icons; pair with an icon or label (DC-L01-15). |
+| `color.text.tertiary` | `#505765` | `same` | Captions and placeholders: the same grey as secondary, so text keeps three greys (primary, secondary, disabled; owner, 2026-11-05). |
+| `color.text.warning` | `#845d03` | `same` | Warning text and icons; pair with an icon or label (DC-L01-15). |
 
 **Use / avoid.**
 - Use one solid accent fill per view for the primary action; spend chroma on small, meaningful elements.
@@ -225,7 +225,7 @@ Designers: primary or brand accent · Code: `color.bg.accent`
 - Avoid color as the only signal: pair status colors with an icon or label.
 - Charts: no chart palette yet (Q-color-19). Take chart colors from the status and accent hues, and check them separately.
 
-Decisions: D-0008 (raw.brandColor), D-0013 (answers.Q-theme-01).
+Decisions: D-0008 (raw.brandColor), D-0022 (answers.Q-theme-01).
 
 </details>
 
@@ -471,7 +471,7 @@ Designers: guardrails and design linting · Code: `engine.py validate, engine.py
 
 **Follow these rules when you build.** They come from sources marked non-negotiable, their values are locked, and `engine.py review` checks the ones it can.
 
-House standards v4: 341 rules followed in this project.
+House standards v4: 340 rules followed in this project; 1 overridden.
 
 **Don't break these:**
 - No motion on 100+ times-a-day actions (STD-when-to-animate-05).
@@ -480,7 +480,10 @@ House standards v4: 341 rules followed in this project.
 - Never block input during transitions (STD-springs-gestures-13).
 - Never rely on haptics alone (STD-accessibility-motion-20).
 
-<details><summary>Every theme (187 rules)</summary>
+**Overridden in this project**
+- ~~Colors adapt to light and dark~~ Overridden in this project: "Owner: remove the dark mode from designs (light only, Figma and both apps)" (D-0021). The house rule: Make interface colors adapt to light and dark mode: give each color role a light value and a dark value. (STD-visual-details-24).
+
+<details><summary>Every theme (186 rules)</summary>
 
 - **When to animate** (15 rules, 13 must): Decide whether to animate first; Name a valid purpose for every animation; Scale motion down as frequency rises; No motion on 100+ times-a-day actions; Never animate keyboard-initiated actions; Remove or shrink motion seen tens-of-times daily; Spend delight only on rare moments; Explanatory motion only in marketing, onboarding; and 5 more must rules. Locks `motion.duration.instant` 0ms.
 - **Easing and duration** (12 rules, 10 must): Pick easing by the motion's job; Strong custom curves, not built-in keywords; Never use ease-in on UI; UI motion under 300ms unless justified; Duration budget for each element; Nothing over 1s unless illustrative; Duration grows with size and distance; Slow deliberate phase, snappy response; and 2 more must rules. Locks `motion.easing.linear` [0, 0, 1, 1], `motion.easing.hover` [0.25, 0.1, 0.25, 1], `motion.easing.enter` [0.23, 1, 0.32, 1], `motion.easing.exit` [0.23, 1, 0.32, 1], `motion.easing.standard` [0.77, 0, 0.175, 1], `motion.duration.micro` 100ms, `motion.duration.short` 150ms, `motion.duration.medium` 200ms, `motion.duration.long` 250ms.
@@ -490,7 +493,7 @@ House standards v4: 341 rules followed in this project.
 - **Accessibility in motion** (9 rules, 5 must): Ship reduced motion with the animation; Reduced motion is gentler, never zero; Scale layout with the user's text size; Never rely on haptics alone; Never trap the user in an overlay. Locks `raw.reducedMotion` "replace", `motion.duration.reduced-fade` 200ms, `reduced:motion.transition.enter` a composite value (see standards.md), `reduced:motion.transition.exit` a composite value (see standards.md), `reduced:motion.transition.expand` a composite value (see standards.md).
 - **Toasts, drawers and overlays** (10 rules, 4 must): React Native toasts: 300ms in, 250ms out; Drawer curve: cubic-bezier(0.32, 0.72, 0, 1); React Native: form sheets on both platforms; Feedback on press, commit on release. Locks `component.toast.duration` 4000ms, `motion.easing.drawer` [0.32, 0.72, 0, 1], `motion.gesture.drag-lock-after-scroll` 100ms.
 - **Mobile and touch** (22 rules, 18 must): Press feedback scales to 0.97, briefly; Touch targets 44pt on iOS, 48dp on Android; Paint edge to edge, pad the safe areas; Ignore extra fingers during a drag; Redesign hover affordances for touch; Use Gesture Handler, never PanResponder; Use scheduleOnRN, not runOnJS; Cross to the JS thread only at thresholds; and 10 more must rules. Locks `motion.scale.press` 0.97, `motion.duration.micro` 100ms (STD-easing-duration-07 wins), `size.target.touch` 44px, `size.target.min` 44px, `motion.spring.spatial.dampingRatio` 1.0 (STD-springs-gestures-04 wins).
-- **Visual details** (43 rules, 15 must): Tabular digits for changing numbers; Use the ellipsis character; Loosen tracking on uppercase labels; Make letter-spacing specific to size; Reserve underlines for links; Never stack light translucent surfaces; Restrained look with no project; Use and extend existing tokens; and 7 more must rules.
+- **Visual details** (42 rules, 15 must): Tabular digits for changing numbers; Use the ellipsis character; Loosen tracking on uppercase labels; Make letter-spacing specific to size; Reserve underlines for links; Never stack light translucent surfaces; Restrained look with no project; Use and extend existing tokens; and 7 more must rules.
 - **Process, review and taste** (14 rules, 8 must): Motion that merely runs is not done; Self-check motion before finishing; Report review findings as one table; Close every motion review with Block or Approve; Make the motion call yourself; Keep the motion note to a few lines; Say when feel can't be judged from code; Judge feel on real hardware.
 - **Swift** (15 rules, 11 must): Check the Swift toolchain first; Simplest, most static thing first; Value types by default; Make invalid states unrepresentable; Main actor first, then step down; Enable Approachable Concurrency everywhere; MainActor default isolation for app modules; Libraries ship nonisolated APIs; and 3 more must rules.
 
@@ -534,22 +537,21 @@ Decisions: D-0005 (25 values, standards).
 
 ## Modes and Themes
 
-> Zoom: sketch (0 of 3), 1 decision in this area. To zoom in, answer Q-theme-03.
-<!-- od:zoom area=modes level=0 -->
+> Zoom: defined (2 of 3), 1 decision in this area. To zoom in, answer Q-theme-02, Q-theme-04.
+<!-- od:zoom area=modes level=2 -->
 
-**The system has light and dark color modes, three spacing densities and a reduced-motion mode.**
+**The system has one color mode, three spacing densities and a reduced-motion mode.**
 Designers: modes: light, dark, density, motion · Code: `resolver modifiers, Figma collection modes`
 
 <details><summary>More</summary>
 
 **Your answers here** (each one either sets tokens or is a rule for this section):
-- Should the app have light and dark modes that follow the device, or just one mode? **Light and dark, matching the device setting** (chosen; tokens; Q-theme-01)
+- Should the app have light and dark modes that follow the device, or just one mode? **Light only** (chosen; tokens; Q-theme-01)
 
 **Intent.** Modes live in the DTCG resolver (`opendesigner/tokens/opendesigner.resolver.json`); modifiers are orthogonal, so no two set the same token.
 
 | Modifier | Contexts | Default |
 |---|---|---|
-| theme | light, dark | light |
 | density | spacious, comfortable, compact | spacious |
 | motion | standard, reduced | standard |
 
@@ -557,7 +559,7 @@ Designers: modes: light, dark, density, motion · Code: `resolver modifiers, Fig
 - High-contrast themes are not generated; set `raw.contrastTarget` to AAA for 7:1 text everywhere.
 - A second brand or a client re-skin may override the color primitives and `color.bg.brand`; semantic names never change.
 
-Decisions: D-0013 (answers.Q-theme-01).
+Decisions: D-0022 (answers.Q-theme-01).
 
 </details>
 
@@ -672,7 +674,7 @@ Decisions: D-0009 (answers.Q-plat-01).
 
 ## Decisions
 
-**20 decisions so far.** Each one says who set it and why.
+**22 decisions so far.** Each one says who set it and why.
 Designers: decision history with reasons · Code: `opendesigner/decisions.md`
 
 <details><summary>More</summary>
@@ -690,7 +692,6 @@ Your own decisions first (the newest value per path), then your changes to stand
 | D-0010 | `macros` | ["deferential", "minimal", "serious", "authoritative"] | chosen | sketch: Level 0 answer (their words: calm, trustworthy) |
 | D-0011 | `taste.feelWords` | ["calm", "trustworthy"] | chosen | sketch: the person's own feel words |
 | D-0012 | `taste.brief` | "a calm, legible companion for a stressful moment underground" | chosen | sketch: the person's picture of the look |
-| D-0013 | `answers.Q-theme-01` | "system-light-dark" | chosen | sketch: Level 0 answer |
 | D-0014 | `answers.Q-scope-06` | ["app:operate"] | chosen | sketch: Level 0 answer |
 | D-0015 | `answers.Q-shape-01` | "soft" | assumed | Matches existing Figma screens (iOS-style rounded cards) the owner says fit their direction |
 | D-0016 | `answers.Q-shape-04` | "continuous" | assumed | Native iOS app |
@@ -698,6 +699,8 @@ Your own decisions first (the newest value per path), then your changes to stand
 | D-0018 | `radius.container` | 16 | assumed | Existing PocketRoute screens use ~16px iOS card corners the owner likes |
 | D-0019 | `radius.control` | 12 | assumed | 56px buttons and chips; 12px keeps proportion with 16px cards |
 | D-0020 | `radius.overlay` | 24 | assumed | iOS sheets use larger corners than cards |
+| D-0022 | `answers.Q-theme-01` | "light-only" | chosen | Owner asked to remove dark mode from Figma and both apps |
+| D-0021 | standards | override STD-visual-details-24 (house standard) | chosen, overrides STD-visual-details-24 | Owner: remove the dark mode from designs (light only, Figma and both apps) |
 | D-0005 | standards | House standards v4: 341 applied | standard (locked) | OpenDesigner's house standards (sources marked non-negotiable) are applied without asking and locked. Change one only when the person asks: engine.py... |
 
 </details>
@@ -706,7 +709,7 @@ Your own decisions first (the newest value per path), then your changes to stand
 
 **These parts are still defaults, guesses, or waiting for a person.**
 
-- Still defaults (zoom 0, sketch): Colors, Layout, Elevation & Depth, Components, Motion, Modes and Themes, Iconography and Imagery, Content and Voice, Accessibility, Platforms and Devices
+- Still defaults (zoom 0, sketch): Colors, Layout, Elevation & Depth, Components, Motion, Iconography and Imagery, Content and Voice, Accessibility, Platforms and Devices
 - Assets not final: Logo, wordmark, symbol, lockups (H-logo): pending; App icon (H-appicon): pending; Favicon set (H-favicon): pending; Custom icons, pictograms, spot icons (H-icons): pending; Illustration, characters, empty-state art (H-illus): pending; Photography and art direction (H-photo): pending; Brand typeface files (H-type): pending; Fixed brand colors (H-color): pending; Motion signature and rich media (H-motion): pending; Graphic devices, patterns, textures, brand gradients, signature shape (H-motif): pending; UI sounds and sonic logo (H-sound): pending; Custom haptic patterns (H-haptic): pending; Voice and tone guide (H-voice): pending; Brand guidelines PDF (H-brandbook): pending
 - Answers taken on assumption or delegated: context.product (assumed), answers.Q-scope-07 (assumed), context.audience (assumed), answers.Q-shape-01 (assumed), answers.Q-shape-04 (assumed), answers.Q-type-01 (assumed), overrides.radius.container (assumed), overrides.radius.control (assumed), overrides.radius.overlay (assumed)
 - Waivers: none.

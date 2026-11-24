@@ -3,8 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#f1f4fa" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#141518" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f1f4fa" />
     <meta name="description" content="PocketRoute finds another way across the Tube when your journey breaks, even with no signal." />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="apple-touch-icon" href="/icon.svg" />
@@ -29,7 +28,7 @@
       <header class="offline-heading"><span class="offline-symbol">⌁</span><div><strong id="offline-title">You’re offline</strong><small id="offline-last-signal">No recent location</small></div><button class="sheet-close" data-action="close-dialog" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
       <div class="offline-features">
         <div class="offline-feature available"><span>✓</span><div><strong>Re-routing</strong><small id="offline-map-detail">Saved Tube map</small></div></div>
-        <div class="offline-feature unavailable"><span>×</span><div><strong>AI understanding</strong><small>Quick replies only</small></div></div>
+        <div class="offline-feature unavailable" id="offline-ai"><span>×</span><div><strong>AI understanding</strong><small>Station names, common phrases and quick replies</small></div></div>
         <div class="offline-feature unavailable"><span>×</span><div><strong>Voice</strong><small>Not in the browser</small></div></div>
         <div class="offline-feature unavailable"><span>×</span><div><strong>Live service updates</strong><small>Needs signal. Tell me what you see instead.</small></div></div>
       </div>

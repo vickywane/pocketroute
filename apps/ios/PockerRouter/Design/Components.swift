@@ -194,7 +194,7 @@ struct UnderstoodRow: View {
             }
             if let by {
                 Label(tags.isEmpty ? "\(by.rawValue) · nothing to change" : by.rawValue,
-                      systemImage: by == .onDevice ? "sparkles" : "text.magnifyingglass")
+                      systemImage: by == .onDevice || by == .cloud ? "sparkles" : "text.magnifyingglass")
                     .font(Typography.footnote).foregroundStyle(Theme.secondary)
             }
         }
@@ -303,4 +303,5 @@ enum Preference {
     static let onboardingComplete = "pocketroute.onboarding.complete"
     static let keepMapUpdated = "pocketroute.prefs.keepMapUpdated"
     static let stepFree = "pocketroute.prefs.stepFree"
+    static let cloudAssist = "pocketroute.prefs.cloudAssist"
 }

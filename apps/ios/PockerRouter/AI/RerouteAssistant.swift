@@ -1,9 +1,11 @@
 import Foundation
+import os
 
 /// Who read the passenger's message, shown under it so people know how much
 /// to trust the reading.
 enum UnderstoodBy: String, Sendable, Equatable {
     case onDevice = "Understood on this iPhone"
+    case cloud = "Understood by Gemini"
     case keywords = "Matched by keywords"
     case tap = "Tapped"
 }
@@ -20,31 +22,61 @@ struct KeywordInterpreter: TurnInterpreting {
     }
 }
 
-/// Apple Intelligence when it can run, keyword rules otherwise. The model's
-/// reading is grounded against the passenger's own words, then merged with
-/// the keyword reading so a missed flag ("step-free") is still caught.
+/// Firebase AI Logic hybrid inference: Apple Intelligence on device when it
+/// can run, Gemini through Firebase when the passenger opted in and is online,
+/// keyword rules otherwise. Every model reading is grounded against the
+/// passenger's own words, then merged with the keyword reading so a missed
+/// flag ("step-free") is still caught.
 struct HybridInterpreter: TurnInterpreting {
     var timeout: Duration = .seconds(6)
+    var onDeviceAvailable: @Sendable () -> Bool = { AssistantAvailability.current == .onDevice }
+    var cloudAllowed: @Sendable () -> Bool = { CloudAssist.canRun() }
+    var onDevice: @Sendable (String, TurnContext) async throws -> ParsedTurn = { try await OnDeviceParser().parse($0, context: $1) }
+    var cloud: @Sendable (String, TurnContext) async throws -> ParsedTurn = { try await CloudParser().parse($0, context: $1) }
 
     func interpret(_ text: String, context: TurnContext, matcher: StationMatcher) async -> (ParsedTurn, UnderstoodBy) {
         let keywords = KeywordParser(matcher: matcher).parse(text)
-        guard AssistantAvailability.current == .onDevice else { return (keywords, .keywords) }
-        do {
-            let model = try await withThrowingTaskGroup(of: ParsedTurn.self) { group in
-                group.addTask { try await OnDeviceParser().parse(text, context: context) }
-                group.addTask { [timeout] in
-                    try await Task.sleep(for: timeout)
-                    throw CancellationError()
-                }
-                defer { group.cancelAll() }
-                guard let first = try await group.next() else { throw CancellationError() }
-                return first
-            }
+        // A bare station name ("Euston") answers a question; no model needed.
+        if case .station = matcher.match(text) { return (keywords, .keywords) }
+        var readers: [(UnderstoodBy, @Sendable (String, TurnContext) async throws -> ParsedTurn)] = []
+        if onDeviceAvailable() { readers.append((.onDevice, onDevice)) }
+        if cloudAllowed() { readers.append((.cloud, cloud)) }
+        for (by, read) in readers {
+            guard let model = try? await withTimeout({ try await read(text, context) }) else { continue }
             let said = Grounding.keepSaid(model, in: text, matcher: matcher)
-            return (Grounding.trustFlags(said, keywords: keywords, text: text).merged(with: keywords), .onDevice)
-        } catch {
-            return (keywords, .keywords)
+            return (Grounding.trustFlags(said, keywords: keywords, text: text, matcher: matcher).merged(with: keywords), by)
         }
+        return (keywords, .keywords)
+    }
+
+    /// Returns as soon as the work or the timer finishes, without waiting for
+    /// a slow request to notice it was cancelled.
+    private func withTimeout(_ work: @escaping @Sendable () async throws -> ParsedTurn) async throws -> ParsedTurn {
+        let once = OnceResult()
+        return try await withCheckedThrowingContinuation { continuation in
+            let task = Task {
+                do { once.resume(continuation, with: .success(try await work())) } catch { once.resume(continuation, with: .failure(error)) }
+            }
+            Task { [timeout] in
+                try? await Task.sleep(for: timeout)
+                if once.resume(continuation, with: .failure(CancellationError())) { task.cancel() }
+            }
+        }
+    }
+}
+
+/// Resumes a continuation exactly once, whichever side gets there first.
+private final class OnceResult: Sendable {
+    private let done = OSAllocatedUnfairLock(initialState: false)
+
+    @discardableResult
+    func resume(_ continuation: CheckedContinuation<ParsedTurn, any Error>, with result: Result<ParsedTurn, any Error>) -> Bool {
+        let first = done.withLock { done in
+            defer { done = true }
+            return !done
+        }
+        if first { continuation.resume(with: result) }
+        return first
     }
 }
 
@@ -79,19 +111,46 @@ enum Grounding {
         return turn
     }
 
-    /// The model is quick to raise flags. Keep the ones that over-restrict a
+    /// Models are quick to raise flags. Keep the ones that over-restrict a
     /// route only when the words back them up:
     /// - the ends of a closed section are not closed stations,
     /// - "that route is blocked" needs the keyword rules to agree, and gives
     ///   way to an explicit closure,
-    /// - a live-info question needs the keyword rules or a question mark.
-    static func trustFlags(_ turn: ParsedTurn, keywords: ParsedTurn, text: String) -> ParsedTurn {
+    /// - "the line is closed" gives way to an explicit closure, which is more
+    ///   precise ("between Camden and Euston" doesn't close the whole line),
+    /// - a closed line isn't also the line the passenger is on,
+    /// - a live-info question needs the keyword rules or a question mark, and
+    ///   a line named in one isn't the line the passenger is on.
+    static func trustFlags(_ turn: ParsedTurn, keywords: ParsedTurn, text: String, matcher: StationMatcher? = nil) -> ParsedTurn {
         var turn = turn
-        let ends = Set(turn.closedSections.flatMap { [StationMatcher.normalise($0.from), StationMatcher.normalise($0.to)] })
-        turn.closedStations.removeAll { ends.contains(StationMatcher.normalise($0)) }
+        let norm = StationMatcher.normalise
+        /// Same station however it's written ("Camden", "Camden Town").
+        func place(_ name: String) -> String {
+            if let matcher, case let .station(id) = matcher.match(name) { return id }
+            return norm(name)
+        }
+        // No closure words at all: any closure the model reported is its own invention.
+        if !KeywordParser.reportsClosure(text) {
+            turn.closedLines = []; turn.closedStations = []; turn.closedSections = []
+        }
+        let ends = Set((turn.closedSections + keywords.closedSections).flatMap { [place($0.from), place($0.to)] })
+        turn.closedStations.removeAll { ends.contains(place($0)) }
+        // Where the passenger is and where they're going aren't closed unless the rules agree.
+        let own = Set([turn.currentStation, turn.destination, keywords.currentStation, keywords.destination].compactMap { $0.map(place) })
+        let keywordClosed = Set(keywords.closedStations.map(place))
+        turn.closedStations.removeAll { own.contains(place($0)) && !keywordClosed.contains(place($0)) }
+        // Nor is the line they're on, or a line named in a closed section.
+        let onLines = Set([turn.line, keywords.line].compactMap { $0.map(norm) } + (turn.closedSections + keywords.closedSections).compactMap { $0.line.map(norm) })
+        let keywordLines = Set(keywords.closedLines.map(norm))
+        turn.closedLines.removeAll { onLines.contains(norm($0)) && !keywordLines.contains(norm($0)) }
+        turn.fewerChanges = turn.fewerChanges && (keywords.fewerChanges || KeywordParser.mentionsChanges(text))
         let explicitClosure = !turn.closedSections.isEmpty || !turn.closedLines.isEmpty || !turn.closedStations.isEmpty
         turn.currentRouteBlocked = turn.currentRouteBlocked && keywords.currentRouteBlocked && !explicitClosure
+        if turn.situation == .lineClosed && explicitClosure && keywords.situation != .lineClosed { turn.situation = keywords.situation }
+        let closed = Set((turn.closedLines + turn.closedSections.compactMap(\.line)).map(StationMatcher.normalise))
+        if let line = turn.line, closed.contains(StationMatcher.normalise(line)), keywords.line == nil { turn.line = nil }
         turn.asksForUnavailableInfo = turn.asksForUnavailableInfo && (keywords.asksForUnavailableInfo || text.contains("?"))
+        if turn.asksForUnavailableInfo && keywords.line == nil { turn.line = nil }
         return turn
     }
 }

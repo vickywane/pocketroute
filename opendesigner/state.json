@@ -92,7 +92,7 @@
       "brandExact": true,
       "tintTowardBrand": false,
       "motionOff": false,
-      "darkMode": true,
+      "darkMode": false,
       "p3": true
     },
     "overrides": {},
@@ -326,10 +326,9 @@
       "locked": false
     },
     "Q-theme-01": {
-      "value": "system-light-dark",
+      "value": "light-only",
       "set_by": "chosen",
-      "decision": "D-0013",
-      "via": "sketch",
+      "decision": "D-0022",
       "locked": false
     },
     "Q-scope-06": {
@@ -507,8 +506,8 @@
   },
   "research": {},
   "hashes": {
-    "DESIGN.md": "62e27fb4a7265d62",
-    "PRODUCT.md": "6db24f2a9b1a828f"
+    "DESIGN.md": "70165e5f8e47ee0c",
+    "PRODUCT.md": "71a457a19449ee77"
   },
   "exports": {
     "prefix": "ds",
@@ -894,7 +893,13 @@
       "STD-visual-details-65",
       "STD-visual-details-66"
     ],
-    "overridden": {},
+    "overridden": {
+      "STD-visual-details-24": {
+        "why": "Owner: remove the dark mode from designs (light only, Figma and both apps)",
+        "decision": "D-0021",
+        "date": "2026-11-24"
+      }
+    },
     "project": [],
     "retired_seen": [],
     "records": {

@@ -79,9 +79,7 @@ struct OfflineInfoSheet: View {
             VStack(spacing: 0) {
                 feature("Re-routing", detail: "\(graph.stationCount) stations saved · map from \(graph.generatedAt?.formatted(date: .abbreviated, time: .omitted) ?? graph.version)", available: true)
                 feature("Voice", detail: "Speech recognition on this iPhone, when supported", available: true)
-                feature("AI understanding", detail: AssistantAvailability.current == .onDevice ? "Apple Intelligence on this iPhone, no signal needed"
-                                                    : "Keywords and quick replies; \(AssistantAvailability.current.title.lowercased())",
-                        available: AssistantAvailability.current == .onDevice)
+                feature("AI understanding", detail: aiDetail, available: AssistantAvailability.current == .onDevice || CloudAssist.canRun())
                 feature("Live service updates", detail: "Not available. Tell the app what’s wrong instead", available: false)
                 feature("Account sync", detail: "Not connected in this version", available: false, last: true)
             }
@@ -93,6 +91,12 @@ struct OfflineInfoSheet: View {
         .presentationDetents([.fraction(0.55)])
         .presentationDragIndicator(.visible)
         .presentationCornerRadius(22)
+    }
+
+    private var aiDetail: String {
+        if AssistantAvailability.current == .onDevice { return "Apple Intelligence on this iPhone, no signal needed" }
+        if CloudAssist.canRun() { return "Gemini while you’re online; keywords offline" }
+        return "Keywords and quick replies; \(AssistantAvailability.current.title.lowercased())"
     }
 
     private func feature(_ title: String, detail: String, available: Bool, last: Bool = false) -> some View {

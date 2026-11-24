@@ -454,3 +454,18 @@ Append-only, ADR-style (spec 7.9): one entry per decision, newest last. A later 
 ## D-0020 · overrides.radius.overlay = 24
 - set_by: assumed · locked: no · date: 2026-11-16 · supersedes: none · source_ref: none
 - reason: iOS sheets use larger corners than cards
+
+## D-0021 · override STD-visual-details-24 (house standard)
+- set_by: chosen · locked: no · date: 2026-11-24 · supersedes: D-0005 · source_ref: none
+- reason: Owner: remove the dark mode from designs (light only, Figma and both apps)
+- house standard STD-visual-details-24: Make interface colors adapt to light and dark mode: give each color role a light value and a dark value.
+- why the house follows it: The source lists colors that adapt to light and dark as part of the craft that builds trust.
+- unlocked: nothing (it sets no values)
+
+## D-0022 · answers.Q-theme-01 = "light-only"
+- set_by: chosen · locked: no · date: 2026-11-24 · supersedes: D-0013 · source_ref: none
+- reason: Owner asked to remove dark mode from Figma and both apps
+- quote: "remove the dark mode from designs"
+- previous value: "system-light-dark"
+- also set: raw.flags.darkMode = false (from Q-theme-01)
+- also set: raw.defaultTheme = "system" (from Q-theme-01)

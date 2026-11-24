@@ -109,7 +109,7 @@ final class NetworkGraph: Sendable {
             let ids = route.stationIds.filter { stations[$0] != nil }
             for (a, b) in zip(ids, ids.dropFirst()) {
                 guard let from = stations[a], let to = stations[b] else { continue }
-                let edge = Edge(from: a, to: b, lineId: route.lineId, minutes: Self.rideMinutes(from: from, to: to))
+                let edge = Edge(from: a, to: b, lineId: route.lineId, minutes: Self.rideMinutes(from: from, to: to, line: route.lineId))
                 edges[a, default: []].insert(edge)
             }
             if ids.count >= 3 {
@@ -180,11 +180,20 @@ final class NetworkGraph: Sendable {
 
     // MARK: - Estimates
 
-    /// No timetabled run times are in the snapshot, so estimate from distance:
-    /// about 33 km/h average between stops plus dwell time.
-    static func rideMinutes(from a: Station, to b: Station) -> Double {
+    /// Typical running speed between stops, in metres per minute. The deep
+    /// lines with long gaps and newer trains run faster than the older
+    /// sub-surface lines with short gaps. Mirrors `LINE_METRES_PER_MIN` in
+    /// `apps/web/route-engine.js`.
+    static let lineMetresPerMinute: [String: Double] = [
+        "metropolitan": 750, "jubilee": 620, "victoria": 600, "central": 600, "piccadilly": 580,
+        "northern": 550, "waterloo-city": 550, "district": 480, "bakerloo": 480, "circle": 420, "hammersmith-city": 420,
+    ]
+
+    /// No timetabled run times are in the snapshot, so estimate from distance
+    /// at the line's typical speed, plus dwell time at the stop.
+    static func rideMinutes(from a: Station, to b: Station, line: String? = nil) -> Double {
         let metres = a.location.distance(from: b.location)
-        return 0.6 + metres / 550
+        return 0.6 + metres / (line.flatMap { lineMetresPerMinute[$0] } ?? 550)
     }
 
     /// Street walking estimate: straight-line distance × 1.3 at 80 m/min.

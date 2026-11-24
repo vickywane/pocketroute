@@ -72,6 +72,24 @@ enum AssistantAvailability: Equatable, Sendable {
     }
 }
 
+/// A model's reading as plain values, whichever model produced it.
+struct ModelFields: Sendable {
+    var currentStation: String?
+    var destination: String?
+    var line: String?
+    var situation: String?
+    var trainMoving = false
+    var closedLines: [String] = []
+    var closedFrom: String?
+    var closedTo: String?
+    var closedStations: [String] = []
+    var currentRouteBlocked = false
+    var stepFree = false
+    var walking: String?
+    var fewerChanges = false
+    var asksForUnavailableInfo = false
+}
+
 /// Context the model needs to make sense of "that branch" or "the change".
 struct TurnContext: Sendable, Equatable {
     var origin: String?
@@ -90,22 +108,35 @@ struct OnDeviceParser: Sendable {
     Leave a field empty when they did not say it. You do not plan routes and you do not know live service information.
     """
 
-    func parse(_ text: String, context: TurnContext) async throws -> ParsedTurn {
-        let session = LanguageModelSession(instructions: Self.instructions)
+    /// The request text shared by the on-device and Gemini readers.
+    static func prompt(_ text: String, context: TurnContext) -> String {
         var prompt = ""
         if let origin = context.origin { prompt += "Known so far: at \(origin)" }
         if let destination = context.destination { prompt += (prompt.isEmpty ? "Known so far: " : ", ") + "going to \(destination)" }
         if let line = context.line { prompt += (prompt.isEmpty ? "Known so far: " : ", ") + "on the \(line) line" }
         if !prompt.isEmpty { prompt += ".\n" }
         if let route = context.currentRoute { prompt += "Route currently suggested: \(route).\n" }
-        prompt += "Passenger says: \(text)"
+        return prompt + "Passenger says: \(text)"
+    }
 
-        let response = try await session.respond(to: prompt, generating: ModelTurn.self,
+    func parse(_ text: String, context: TurnContext) async throws -> ParsedTurn {
+        let session = LanguageModelSession(model: SystemLanguageModel.default, instructions: Self.instructions)
+        let response = try await session.respond(to: Self.prompt(text, context: context), generating: ModelTurn.self,
                                                  options: GenerationOptions(samplingMode: .greedy, maximumResponseTokens: 300))
         return Self.turn(from: response.content)
     }
 
     static func turn(from model: ModelTurn) -> ParsedTurn {
+        turn(from: ModelFields(
+            currentStation: model.currentStation, destination: model.destination, line: model.line,
+            situation: model.situation, trainMoving: model.trainMoving, closedLines: model.closedLines,
+            closedFrom: model.closedFrom, closedTo: model.closedTo, closedStations: model.closedStations,
+            currentRouteBlocked: model.currentRouteBlocked, stepFree: model.stepFree, walking: model.walking,
+            fewerChanges: model.fewerChanges, asksForUnavailableInfo: model.asksForUnavailableInfo
+        ))
+    }
+
+    static func turn(from model: ModelFields) -> ParsedTurn {
         func clean(_ value: String?) -> String? {
             guard let value = value?.trimmingCharacters(in: .whitespacesAndNewlines), !value.isEmpty,
                   !["none", "null", "unknown", "n/a"].contains(value.lowercased()) else { return nil }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		016C87182DA5FFF2539D098E /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = EFD85711ED741ABBCAEFDF7B /* FirebaseRemoteConfig */; };
 		1408CA56C8B9D5C158A165ED /* Sheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45349F44AF7B85D94631A5F2 /* Sheets.swift */; };
 		280EC32DDB0ABE495921EFAD /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761E165E669480AA489AFF0C /* OnboardingView.swift */; };
 		28967FBA9EEE4C2FEDCE7C29 /* RerouteAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6320EA4A78E33B73DA68DE61 /* RerouteAssistant.swift */; };
@@ -15,8 +16,10 @@
 		3E13EB8EFF65648BBD66A787 /* RerouteSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420CD4EB14B214E5E40D4994 /* RerouteSession.swift */; };
 		418CF2D427E1B405A95D37A3 /* london-underground-network-v1.json in Resources */ = {isa = PBXBuildFile; fileRef = 13A61574A5E423343BA842FB /* london-underground-network-v1.json */; };
 		4541F548587688CF3DE81AA3 /* VoiceCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6259CB6CF06A72874E7E58AA /* VoiceCapture.swift */; };
+		4EC600CBFECB28811F8CCF3B /* FirebaseAILogic in Frameworks */ = {isa = PBXBuildFile; productRef = 258455CAC77B7AC664E23DBC /* FirebaseAILogic */; };
 		53B7F1AC9EEFA03A8999AFDA /* GuidanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FCCF4BA5BF95DAFD7865B0 /* GuidanceView.swift */; };
 		54311BE63DE4F157326A3312 /* StationLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEF0F9C95565F5FBB24BA1A /* StationLocator.swift */; };
+		5F83994B5DA657740A79E5D5 /* CloudParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED3802189CFFB436E595928 /* CloudParser.swift */; };
 		60FF011E23153299838372B4 /* StationMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C19397ABD1B29271EDB865 /* StationMatcher.swift */; };
 		6AFC6322E0B79CC70BAEE4B9 /* CaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0DD06F6328FCA4EE792F124 /* CaptureView.swift */; };
 		7761F45896ACA743E0385526 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB8D8927A47442EDC34C5740 /* Theme.swift */; };
@@ -28,6 +31,7 @@
 		BE84A632A538729E8B800C2A /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 59B1C381A5523FA0DE510CD0 /* FirebaseAppCheck */; };
 		D6833E63ADAB0B63E064A382 /* AssistantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34B3105F71E0989CB20A09B /* AssistantTests.swift */; };
 		DE6B8A1CD4B6F7B0A80C3B73 /* StationPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E4B80044814A28FC0AD7CA6 /* StationPickerView.swift */; };
+		E2FC5D46A7B9E11770AA9CA3 /* AssistantEvalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A154247F927357C1451F371 /* AssistantEvalTests.swift */; };
 		E6BE6F7AB27B50E2B94A6D8B /* JourneyHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E934D723FDC4C4D462ECC61 /* JourneyHomeView.swift */; };
 		E96641DEC3CE0018A3169F69 /* RouteEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3926356EACC8774272DEEE35 /* RouteEngineTests.swift */; };
 		EFF88F2802A691815350A405 /* NetworkGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = E842BCF8E0C6DEE22E62E01C /* NetworkGraph.swift */; };
@@ -52,6 +56,7 @@
 		1BD9CDA757BA33DC51B2695B /* PassengerTurn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassengerTurn.swift; sourceTree = "<group>"; };
 		1FE8C83024C3E3945D69C083 /* Connectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connectivity.swift; sourceTree = "<group>"; };
 		20C19397ABD1B29271EDB865 /* StationMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationMatcher.swift; sourceTree = "<group>"; };
+		2A154247F927357C1451F371 /* AssistantEvalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistantEvalTests.swift; sourceTree = "<group>"; };
 		3926356EACC8774272DEEE35 /* RouteEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteEngineTests.swift; sourceTree = "<group>"; };
 		3E4B80044814A28FC0AD7CA6 /* StationPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationPickerView.swift; sourceTree = "<group>"; };
 		420CD4EB14B214E5E40D4994 /* RerouteSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RerouteSession.swift; sourceTree = "<group>"; };
@@ -76,6 +81,7 @@
 		E842BCF8E0C6DEE22E62E01C /* NetworkGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkGraph.swift; sourceTree = "<group>"; };
 		F1AF25642EDD173453AA7716 /* SavedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedView.swift; sourceTree = "<group>"; };
 		FAEF0F9C95565F5FBB24BA1A /* StationLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationLocator.swift; sourceTree = "<group>"; };
+		FED3802189CFFB436E595928 /* CloudParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +91,8 @@
 			files = (
 				BE84A632A538729E8B800C2A /* FirebaseAppCheck in Frameworks */,
 				FD9C7DD25A6A37BA2A2672CC /* FirebaseCore in Frameworks */,
+				4EC600CBFECB28811F8CCF3B /* FirebaseAILogic in Frameworks */,
+				016C87182DA5FFF2539D098E /* FirebaseRemoteConfig in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,6 +118,7 @@
 		159CCE502C9A1657DD705167 /* AI */ = {
 			isa = PBXGroup;
 			children = (
+				FED3802189CFFB436E595928 /* CloudParser.swift */,
 				8C46AF01F25159B485A91B42 /* OnDeviceParser.swift */,
 				1BD9CDA757BA33DC51B2695B /* PassengerTurn.swift */,
 				6320EA4A78E33B73DA68DE61 /* RerouteAssistant.swift */,
@@ -129,6 +138,7 @@
 		57C6B8D95C64CB4B61E33022 /* PockerRouterTests */ = {
 			isa = PBXGroup;
 			children = (
+				2A154247F927357C1451F371 /* AssistantEvalTests.swift */,
 				E34B3105F71E0989CB20A09B /* AssistantTests.swift */,
 				3926356EACC8774272DEEE35 /* RouteEngineTests.swift */,
 			);
@@ -258,6 +268,8 @@
 			packageProductDependencies = (
 				59B1C381A5523FA0DE510CD0 /* FirebaseAppCheck */,
 				1556FA2695947ED221389801 /* FirebaseCore */,
+				258455CAC77B7AC664E23DBC /* FirebaseAILogic */,
+				EFD85711ED741ABBCAEFDF7B /* FirebaseRemoteConfig */,
 			);
 			productName = PockerRouter;
 			productReference = 4C929CE72A0B12BB6055DD50 /* PockerRouter.app */;
@@ -353,6 +365,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2FC5D46A7B9E11770AA9CA3 /* AssistantEvalTests.swift in Sources */,
 				D6833E63ADAB0B63E064A382 /* AssistantTests.swift in Sources */,
 				E96641DEC3CE0018A3169F69 /* RouteEngineTests.swift in Sources */,
 			);
@@ -363,6 +376,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6AFC6322E0B79CC70BAEE4B9 /* CaptureView.swift in Sources */,
+				5F83994B5DA657740A79E5D5 /* CloudParser.swift in Sources */,
 				7817BAE2EE854C07C7306307 /* Components.swift in Sources */,
 				7C26F6DC749F85EB3F70CEF2 /* Connectivity.swift in Sources */,
 				91808A51B7D4D121295DD7D7 /* ConversationView.swift in Sources */,
@@ -543,13 +557,13 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = PockerRouter;
+				INFOPLIST_KEY_CFBundleDisplayName = PocketRoute;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Suggest a nearby Tube station to confirm as your starting point.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Record a short voice description of what happened on your journey.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Transcribe a short description of what happened on your journey.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -569,13 +583,13 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = PockerRouter;
+				INFOPLIST_KEY_CFBundleDisplayName = PocketRoute;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Suggest a nearby Tube station to confirm as your starting point.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Record a short voice description of what happened on your journey.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Transcribe a short description of what happened on your journey.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -655,10 +669,20 @@
 			package = 006B130FADF63EF36EC78031 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
 		};
+		258455CAC77B7AC664E23DBC /* FirebaseAILogic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 006B130FADF63EF36EC78031 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAILogic;
+		};
 		59B1C381A5523FA0DE510CD0 /* FirebaseAppCheck */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 006B130FADF63EF36EC78031 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAppCheck;
+		};
+		EFD85711ED741ABBCAEFDF7B /* FirebaseRemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 006B130FADF63EF36EC78031 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfig;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

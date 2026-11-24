@@ -18,30 +18,30 @@ enum Typography {
     static let tabLabel = Font.system(size: 12, weight: .semibold)   // tab bar
 }
 
-/// Semantic colours from `opendesigner/tokens/semantic.color.{light,dark}.tokens.json`.
-/// Views use these roles, never raw RGB values, so light and dark mode both work.
+/// Semantic colours from `opendesigner/tokens/semantic.color.light.tokens.json`.
+/// The app is light only; views use these roles, never raw RGB values.
 enum Theme {
-    static let canvas = dynamic(light: 0xF1F4FA, dark: 0x141518)          // surface.sunken
-    static let surface = dynamic(light: 0xFFFFFF, dark: 0x22252B)         // surface.raised
-    static let ink = dynamic(light: 0x222428, dark: 0xE6E9EE)             // text.primary
-    static let secondary = dynamic(light: 0x505765, dark: 0xA3ABBB)       // text.secondary
-    static let accent = dynamic(light: 0x0E5E58, dark: 0x4B9089)          // bg.accent.bold
-    static let accentText = dynamic(light: 0x0D4B46, dark: 0x78B7B0)      // text.accent
-    static let onAccent = dynamic(light: 0xFFFFFF, dark: 0x141518)        // text.on-accent
-    static let accentSubtle = dynamic(light: 0xE2EEEC, dark: 0x1E2928)    // bg.accent.subtle
-    static let neutralSubtle = dynamic(light: 0xE8ECF3, dark: 0x32363F)   // bg.neutral.subtle
-    static let line = dynamic(light: 0xD5DBE6, dark: 0x3A3F49)            // border.separator
-    static let warningText = dynamic(light: 0x845D03, dark: 0xF8D191)     // text.warning
-    static let warningSubtle = dynamic(light: 0xF3EADD, dark: 0x2D261B)   // bg.warning.subtle
-    static let successText = dynamic(light: 0x1D6333, dark: 0x7EBA8A)     // text.success
-    static let successSubtle = dynamic(light: 0xE1EFE3, dark: 0x1F2A21)   // bg.success.subtle
-    static let dangerText = dynamic(light: 0x8D4039, dark: 0xE6988F)      // text.danger
-    static let infoText = dynamic(light: 0x005C8A, dark: 0x70B3E1)        // text.info
-    static let infoSubtle = dynamic(light: 0xDFEDF8, dark: 0x1C2932)      // bg.info.subtle
-    static let inverse = dynamic(light: 0x222428, dark: 0xE6E9EE)         // bg.inverse
-    static let onInverse = dynamic(light: 0xFFFFFF, dark: 0x141518)       // text.inverse
+    static let canvas = hex(0xF1F4FA)          // surface.sunken
+    static let surface = hex(0xFFFFFF)         // surface.raised
+    static let ink = hex(0x222428)             // text.primary
+    static let secondary = hex(0x505765)       // text.secondary
+    static let accent = hex(0x0E5E58)          // bg.accent.bold
+    static let accentText = hex(0x0D4B46)      // text.accent
+    static let onAccent = hex(0xFFFFFF)        // text.on-accent
+    static let accentSubtle = hex(0xE2EEEC)    // bg.accent.subtle
+    static let neutralSubtle = hex(0xE8ECF3)   // bg.neutral.subtle
+    static let line = hex(0xD5DBE6)            // border.separator
+    static let warningText = hex(0x845D03)     // text.warning
+    static let warningSubtle = hex(0xF3EADD)   // bg.warning.subtle
+    static let successText = hex(0x1D6333)     // text.success
+    static let successSubtle = hex(0xE1EFE3)   // bg.success.subtle
+    static let dangerText = hex(0x8D4039)      // text.danger
+    static let infoText = hex(0x005C8A)        // text.info
+    static let infoSubtle = hex(0xDFEDF8)      // bg.info.subtle
+    static let inverse = hex(0x222428)         // bg.inverse
+    static let onInverse = hex(0xFFFFFF)       // text.inverse
 
-    /// Official TfL line colours (fixed in both modes, white text on top).
+    /// Official TfL line colours (white text on top).
     static func lineColor(_ lineId: String?) -> Color {
         switch lineId {
         case "bakerloo": hex(0xB36305)
@@ -73,10 +73,5 @@ enum Theme {
     private static func uiColor(_ value: UInt32) -> UIColor {
         UIColor(red: CGFloat((value >> 16) & 0xFF) / 255, green: CGFloat((value >> 8) & 0xFF) / 255,
                 blue: CGFloat(value & 0xFF) / 255, alpha: 1)
-    }
-
-    private static func dynamic(light: UInt32, dark: UInt32) -> Color {
-        let lightColor = uiColor(light), darkColor = uiColor(dark)
-        return Color(uiColor: UIColor { $0.userInterfaceStyle == .dark ? darkColor : lightColor })
     }
 }

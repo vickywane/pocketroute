@@ -1,4 +1,6 @@
-import { buildGraph, distanceMetres, routeOptions, segmentKey } from "./route-engine.js";
+import { changesTrip, createMatcher, interpret, planTurn, SITUATION_NAMES } from "./assistant.js";
+import { isConfigured, modelReader, onDeviceStatus } from "./firebase-ai.js";
+import { buildGraph, distanceMetres, routeOptions } from "./route-engine.js";
 
 const DATA_URL = "/data/london-underground-network-v1.json";
 const MAX_STATION_DISTANCE = 2000;
@@ -23,7 +25,9 @@ const state = {
   picker: { origin: true, pending: null, browseAll: false },
   location: { fix: store.get("pocketroute.lastFix", null), status: "idle", suggestion: null },
   online: navigator.onLine,
-  prefs: { stepFree: store.get("pocketroute.stepFree", false), walking: true },
+  prefs: { stepFree: store.get("pocketroute.stepFree", false), walking: true, cloud: store.get("pocketroute.cloudAssist", false) },
+  matcher: null, awaiting: null, thinking: false, constraints: null,
+  ai: { onDevice: "unavailable", configured: false },
   recents: store.get("pocketroute.recents", []),
   permission: null, // geolocation permission: "granted" | "prompt" | "denied" | null (unknown)
   install: { prompt: null, dismissed: store.get("pocketroute.installDismissed", false) },
@@ -107,21 +111,35 @@ function locationText() {
 function openAssistant() {
   const canSearch = state.originId && state.destinationId && state.originId !== state.destinationId;
   const sameTrip = state.request?.origin === state.originId && state.request?.destination === state.destinationId;
-  if (canSearch && (!state.thread.length || !sameTrip)) return startSearch();
+  if (canSearch && (!state.thread.length || (state.request && !sameTrip))) return startSearch();
   state.screen = "results";
   render();
 }
 
-function startSearch() {
-  if (!state.originId || !state.destinationId || state.originId === state.destinationId) return;
+const freshConstraints = () => ({ avoidLines: new Set(), avoidSegments: new Set(), avoidStations: new Set(), stepFree: state.prefs.stepFree, walking: state.prefs.walking, fewerChanges: false });
+
+/** Routes for the trip as it stands: the form's stations and situations plus everything said in the conversation. */
+function search() {
+  if (!state.originId || !state.destinationId || state.originId === state.destinationId) { state.request = null; return []; }
+  const c = state.constraints ?? (state.constraints = freshConstraints());
   const request = {
     origin: state.originId, destination: state.destinationId, onLine: state.onLine,
     trainStuck: state.situations.has("Train held") || state.situations.has("Terminating here"),
-    avoidLines: new Set(state.situations.has("Line closed") && state.onLine ? [state.onLine] : []),
-    avoidSegments: new Set(), stepFreeOnly: state.prefs.stepFree, includeWalking: state.prefs.walking
+    avoidLines: new Set([...c.avoidLines, ...(state.situations.has("Line closed") && state.onLine ? [state.onLine] : [])]),
+    avoidSegments: new Set(c.avoidSegments), avoidStations: new Set(c.avoidStations),
+    stepFreeOnly: c.stepFree, includeWalking: c.walking
   };
   state.request = request;
   const plans = routeOptions(state.graph, request);
+  if (c.fewerChanges) plans.sort((a, b) => (a.walkOnly - b.walkOnly) || a.changes - b.changes || a.minutes - b.minutes);
+  return plans;
+}
+
+function startSearch() {
+  if (!state.originId || !state.destinationId || state.originId === state.destinationId) return;
+  state.constraints = freshConstraints();
+  state.awaiting = null;
+  const plans = search();
   const opener = state.onLine ? `I’m on the ${state.graph.lineName(state.onLine)} line at ${nameOf(state.originId)}.` : `I’m at ${nameOf(state.originId)}.`;
   const reported = SITUATIONS.map(([n]) => n).filter(n => state.situations.has(n));
   const user = [opener, reported.length ? `${reported.join(", ")}.` : "", `How do I get to ${nameOf(state.destinationId)}?`].filter(Boolean).join(" ");
@@ -138,50 +156,127 @@ function openingReply(plans) {
   return plans.length === 1 ? `Here’s the best way to ${dest} from here:` : `There are ${plans.length} ways to ${dest} from here:`;
 }
 
-function applyFollowUp(text) {
-  const trimmed = text.trim();
-  if (!trimmed || !state.request) return;
-  const lower = trimmed.toLowerCase();
-  const request = { ...state.request, avoidLines: new Set(state.request.avoidLines), avoidSegments: new Set(state.request.avoidSegments) };
-  const notes = [];
-  let firstHop = null;
-  const latest = state.thread.at(-1)?.plans ?? [];
-  if (lower.includes("moving")) {
-    request.trainStuck = false;
-    state.situations.delete("Train held"); state.situations.delete("Terminating here");
-    notes.push(state.onLine ? `Good. Staying on the ${state.graph.lineName(state.onLine)} line is back in the options.` : "Good. Here are the options again.");
-  }
-  if (/branch|not running|isn[’']t running/.test(lower)) {
-    const leg = latest[0]?.legs.find(l => l.lineId);
-    if (leg) {
-      leg.stops.slice(0, -1).forEach((a, i) => request.avoidSegments.add(segmentKey(leg.lineId, a, leg.stops[i + 1])));
-      firstHop = segmentKey(leg.lineId, leg.stops[0], leg.stops[1]);
-      notes.push(`OK, avoiding the ${state.graph.lineName(leg.lineId)} line between ${nameOf(leg.stops[0])} and ${nameOf(leg.stops.at(-1))}.`);
-    }
-  }
-  if (/step[- ]free|lift|wheelchair/.test(lower)) {
-    request.stepFreeOnly = true;
-    notes.push("Showing routes that only change at stations TfL lists with lift access. Lift outages aren’t known offline.");
-  }
-  if (/no walk|don[’']t want to walk/.test(lower)) { request.includeWalking = false; notes.push("OK, no walking routes."); }
-  else if (lower.includes("walk")) { request.includeWalking = true; notes.push("Walking is included."); }
+const NO_LIVE_INFO = "I can’t see live service, delays or platforms offline. If you know a line or station is closed, tell me and I’ll route around it.";
+const UNDERSTOOD_BY = { onDevice: "Understood in this browser", cloud: "Understood by Gemini", keywords: "Matched by keywords", tap: "Tapped" };
 
-  let plans = latest, reply;
-  if (!notes.length) {
-    reply = "I can’t understand free text yet, so your routes haven’t changed. Try a quick reply.";
-  } else {
-    plans = routeOptions(state.graph, request);
-    // If the closure also cut the only way out of this station, keep the first hop.
-    if (!plans.length && firstHop) { request.avoidSegments.delete(firstHop); plans = routeOptions(state.graph, request); }
-    state.request = request;
-    const dest = nameOf(request.destination);
-    reply = `${notes.join(" ")} ${plans.length ? (plans.length === 1 ? "Here’s the best way:" : `Here are ${plans.length} ways:`) : `I couldn’t find a route to ${dest} on the saved map with those conditions.`}`;
+function conversationContext() {
+  const plan = state.thread.at(-1)?.plans?.[0];
+  return {
+    origin: nameOf(state.originId) || null, destination: nameOf(state.destinationId) || null,
+    line: state.onLine ? state.graph.lineName(state.onLine) : null,
+    currentRoute: plan ? plan.legs.map(l => (l.lineId ? `${state.graph.lineName(l.lineId)} line ${nameOf(l.stops[0])} to ${nameOf(l.stops.at(-1))}` : `walk to ${nameOf(l.stops.at(-1))}`)).join(", then ") : null
+  };
+}
+
+/**
+ * A typed message or a quick reply, on the first screen or in the conversation.
+ * Chips are read by keyword rules so a tap never waits for a model.
+ */
+async function sendMessage(text, { quick = false } = {}) {
+  const trimmed = text.trim();
+  if (!trimmed || state.thinking || !state.matcher) return;
+  const entry = { id: crypto.randomUUID(), user: trimmed, reply: "", plans: [], pending: true, tags: [], by: null, question: null };
+  if (!state.request && !state.thread.length) state.constraints = freshConstraints();
+  state.thread.push(entry);
+  state.selected = null; state.view = "route"; state.screen = "results"; state.thinking = true;
+  render();
+
+  const reader = quick ? null : await modelReader({ allowCloud: state.prefs.cloud }).catch(() => null);
+  const { turn, by } = await interpret(trimmed, conversationContext(), state.matcher, reader);
+  const latest = state.thread.slice(0, -1).at(-1)?.plans ?? [];
+  const planned = planTurn(turn, {
+    origin: state.originId, destination: state.destinationId, onLine: state.onLine, awaiting: state.awaiting,
+    currentFirstLeg: latest[0]?.legs.find(l => l.lineId) ?? null
+  }, state.matcher);
+  applyPlanned(planned);
+  respond(entry, planned, quick ? "tap" : by);
+}
+
+function applyPlanned(planned) {
+  const c = state.constraints ?? (state.constraints = freshConstraints());
+  if (planned.origin) {
+    state.originId = planned.origin; state.originConfirmed = true;
+    if (state.destinationId === planned.origin) state.destinationId = null;
+    if (state.onLine && !state.graph.stations.get(planned.origin).lineIds.includes(state.onLine)) state.onLine = null;
   }
-  state.thread.push({ id: crypto.randomUUID(), user: trimmed, reply, plans });
-  state.selected = null;
-  state.screen = "results";
+  if (planned.destination && planned.destination !== state.originId) state.destinationId = planned.destination;
+  if (planned.onLine) state.onLine = planned.onLine;
+  if (planned.situation) state.situations.add(SITUATION_NAMES[planned.situation]);
+  if (planned.trainMoving) { state.situations.delete("Train held"); state.situations.delete("Terminating here"); }
+  planned.avoidLines.forEach(l => c.avoidLines.add(l));
+  planned.avoidSegments.forEach(k => c.avoidSegments.add(k));
+  planned.avoidStations.forEach(id => c.avoidStations.add(id));
+  if (planned.stepFree != null) c.stepFree = planned.stepFree;
+  if (planned.walking != null) c.walking = planned.walking;
+  if (planned.fewerChanges) c.fewerChanges = true;
+  if (planned.origin && state.awaiting === "origin") state.awaiting = null;
+  if (planned.destination && state.awaiting === "destination") state.awaiting = null;
+}
+
+function defaultChoices(field) {
+  if (field === "origin") {
+    const ids = state.location.suggestion ? [state.location.suggestion] : [];
+    if (state.onLine && state.destinationId) ids.push(...state.graph.lineOrder(state.onLine, state.destinationId).map(s => s.id));
+    return [...new Set(ids)].filter(id => id !== state.destinationId).slice(0, 4);
+  }
+  return [...new Set(state.recents.map(r => r.destination))].filter(id => id !== state.originId && state.graph.stations.has(id)).slice(0, 4);
+}
+
+function respond(entry, planned, by, answeredQuestion = false) {
+  entry.pending = false;
+  entry.tags = planned.tags;
+  entry.by = by;
+  const problems = planned.problems.join(" ");
+  const join = parts => parts.filter(Boolean).join(" ");
+  const previous = state.thread.slice(0, -1).at(-1)?.plans ?? [];
+  const canSearch = state.originId && state.destinationId && state.originId !== state.destinationId;
+
+  if (planned.question) {
+    state.awaiting = planned.question.field;
+    entry.reply = join([problems, planned.question.prompt]);
+    entry.question = { field: planned.question.field, choices: planned.question.choices };
+  } else if (!canSearch) {
+    const field = state.originId ? "destination" : "origin";
+    state.awaiting = field;
+    entry.reply = join([problems, planned.notes.join(" "), field === "origin" ? "Which station are you at now?" : "Where are you trying to get to?"]);
+    entry.question = { field, choices: defaultChoices(field) };
+  } else if (changesTrip(planned) || !state.request || answeredQuestion) {
+    let plans = search();
+    // The closure also cut the only way out of this station: keep the first hop.
+    if (!plans.length && planned.firstHop) { state.constraints.avoidSegments.delete(planned.firstHop); plans = search(); }
+    entry.plans = plans;
+    const notes = [...planned.notes, ...(planned.asksForUnavailableInfo ? [NO_LIVE_INFO] : [])].join(" ");
+    const dest = nameOf(state.destinationId);
+    const routes = plans.length ? (plans.length === 1 ? `Here’s the best way to ${dest}:` : `Here are ${plans.length} ways to ${dest}:`) : `I couldn’t find a route to ${dest} on the saved map with those conditions.`;
+    entry.reply = join([problems, notes, routes]);
+  } else if (planned.asksForUnavailableInfo) {
+    entry.reply = `${NO_LIVE_INFO} Your routes haven’t changed.`; entry.plans = previous;
+  } else if (problems) {
+    entry.reply = `${problems} Your routes haven’t changed.`; entry.plans = previous;
+  } else {
+    entry.reply = "I didn’t catch a change to your trip, so your routes haven’t changed. Try a quick reply, or say something like “the Victoria line is closed” or “I’m at Euston now”.";
+    entry.plans = previous;
+  }
+  state.thinking = false;
   render();
 }
+
+/** The passenger tapped one of the stations offered in a question. */
+function chooseAnswer(id) {
+  const field = state.awaiting;
+  if (!field || state.thinking) return;
+  const name = nameOf(id);
+  const entry = { id: crypto.randomUUID(), user: name, reply: "", plans: [], pending: true, tags: [], by: null, question: null };
+  state.thread.push(entry);
+  if (field === "origin") { state.originId = id; state.originConfirmed = true; if (state.destinationId === id) state.destinationId = null; }
+  else state.destinationId = id;
+  state.awaiting = null;
+  const planned = planTurn({ ...emptyPlannedTurn() }, {}, state.matcher);
+  planned.tags = [field === "origin" ? `At ${name}` : `To ${name}`];
+  respond(entry, planned, "tap", true);
+}
+
+const emptyPlannedTurn = () => ({ currentStation: null, destination: null, line: null, situation: null, trainMoving: false, closedLines: [], closedSections: [], closedStations: [], currentRouteBlocked: false, stepFree: null, walking: null, fewerChanges: false, asksForUnavailableInfo: false, unassignedStation: null });
 
 // MARK: - Route text
 
@@ -229,7 +324,7 @@ function render() {
   document.querySelector(".tabs").hidden = hideTabs || !state.graph;
   document.querySelectorAll(".tab").forEach(b => { const on = b.dataset.tab === activeTab; b.classList.toggle("active", on); b.setAttribute("aria-current", on ? "page" : "false"); });
   document.body.classList.toggle("no-tabs", hideTabs || !state.graph);
-  document.body.classList.toggle("has-composer", state.view === "route" && state.screen === "results" && !!state.thread.length);
+  document.body.classList.toggle("has-composer", state.view === "route" && state.screen === "results");
   renderToasts();
   if (!state.graph) {
     app.innerHTML = `<section class="screen stack"><h1 class="hero">${state.loadError ? "Couldn’t load the Tube map" : "Loading the saved Tube map…"}</h1>${state.loadError ? `<p>${esc(state.loadError)}</p>` : ""}</section>`;
@@ -288,6 +383,7 @@ function renderCapture() {
     <h2 class="section-title">What happened?</h2>
     <div class="situations">${SITUATIONS.map(([name, glyph]) => `<button class="situation ${state.situations.has(name) ? "selected" : ""}" data-action="situation" data-value="${esc(name)}" aria-pressed="${state.situations.has(name)}"><span class="glyph">${state.situations.has(name) ? "✓" : glyph}</span><span>${name}</span></button>`).join("")}</div>
     ${canSearch ? `<button class="primary show-routes" data-action="find">Show routes</button>` : ""}
+    <form class="compose-row describe-row" id="describe-form"><input name="followup" placeholder="Or describe what happened" aria-label="Describe what happened" autocomplete="off" enterkeyhint="send"/><button class="send" aria-label="Send" disabled>${SEND_ICON}</button></form>
   </section>`;
 }
 
@@ -296,12 +392,26 @@ function routeCard(plan) {
   return `<button class="route-card ${plan.badge === "Fastest" ? "recommended" : ""}" data-action="choose-route" data-value="${esc(plan.id)}"><span class="route-top"><span class="route-copy"><span class="route-name">${esc(routeTitle(plan))}</span><span class="line-tags">${tags}${plan.badge ? `<span class="badge">${plan.badge}</span>` : ""}</span></span><span class="eta">${plan.minutes}<small>min</small></span><span class="chevron">›</span></span><span class="route-detail">${esc(routeDetail(plan))}</span></button>`;
 }
 
+function understoodRow(entry) {
+  if (!entry.by) return "";
+  const tags = entry.tags.map(t => `<span class="understood-tag">${esc(t)}</span>`).join("");
+  const by = entry.tags.length ? UNDERSTOOD_BY[entry.by] : `${UNDERSTOOD_BY[entry.by]} · nothing to change`;
+  return `<div class="understood">${tags ? `<div class="understood-tags">${tags}</div>` : ""}<small>${entry.by === "cloud" || entry.by === "onDevice" ? "✦ " : ""}${esc(by)}</small></div>`;
+}
+
+function choiceButtons(entry, latest) {
+  if (!entry.question || !latest) return "";
+  const choices = entry.question.choices.map(id => `<button class="chip choice" data-action="answer" data-value="${esc(id)}">${esc(nameOf(id))}${state.graph.stations.get(id)?.lineIds.length && entry.question.choices.filter(c => nameOf(c) === nameOf(id)).length > 1 ? ` · ${esc(state.graph.stations.get(id).lineIds.map(state.graph.lineName).join(", "))}` : ""}</button>`).join("");
+  return `<div class="choices">${choices}<button class="chip choice" data-action="answer-other">Another station</button></div>`;
+}
+
 function renderResults() {
-  if (!state.request || !state.thread.length) {
+  if (!state.thread.length) {
     app.innerHTML = `<section class="screen stack results-screen">
       ${topNav("Ask AI", { menu: true, trailing: settingsButton() })}
-      <div class="thread"><div class="assistant-message"><span class="assistant-mark">✦</span><div class="bubble">Choose where you are and where you’re going on Re-route, and I’ll find another way from your saved Tube map.</div></div>
-      <button class="primary" data-action="back">Choose stations</button></div></section>`;
+      <div class="thread"><div class="assistant-message"><span class="assistant-mark">✦</span><div class="bubble">Tell me where you are, where you’re going and what happened, or choose stations on Re-route.</div></div>
+      <button class="primary" data-action="back">Choose stations</button></div></section>
+      <div class="composer"><form class="compose-row" id="follow-form"><input name="followup" placeholder="Held at Camden, need Warren St" aria-label="Describe what happened" autocomplete="off"/><button class="send" aria-label="Send" disabled>${SEND_ICON}</button></form></div>`;
     return;
   }
   const entries = state.thread.map((entry, i) => {
@@ -309,14 +419,16 @@ function renderResults() {
     const cards = latest || state.expanded.has(entry.id)
       ? entry.plans.map(routeCard).join("")
       : entry.plans.length ? `<button class="browse-stations" data-action="expand" data-value="${entry.id}">${entry.plans.length} earlier option${entry.plans.length === 1 ? "" : "s"} · Show</button>` : "";
-    return `<div class="user-message"><div class="bubble user">${esc(entry.user)}</div></div>
-      <div class="assistant-message"><span class="assistant-mark">✦</span><div class="bubble">${esc(entry.reply)}</div></div>${cards}`;
+    const reply = entry.pending ? `<div class="bubble thinking" role="status">Reading that against the saved map…</div>` : `<div class="bubble">${esc(entry.reply)}</div>`;
+    return `<div class="user-message"><div class="bubble user">${esc(entry.user)}</div>${understoodRow(entry)}</div>
+      <div class="assistant-message"><span class="assistant-mark">✦</span>${reply}</div>${choiceButtons(entry, latest)}${cards}`;
   }).join("");
+  const title = state.request ? `${nameOf(state.request.origin)} → ${nameOf(state.request.destination)}` : "Ask AI";
   app.innerHTML = `<section class="screen stack results-screen">
-    ${topNav(`${nameOf(state.request.origin)} → ${nameOf(state.request.destination)}`, { menu: true, trailing: settingsButton() })}
+    ${topNav(title, { menu: true, trailing: settingsButton() })}
     <div class="thread">${entries}</div></section>
-    <div class="composer"><div class="chips">${["Train is moving again", "Branch isn’t running", "Step-free only", "I’d rather walk"].map(t => `<button class="chip" data-action="follow" data-value="${esc(t)}">${esc(t)}</button>`).join("")}</div>
-    <form class="compose-row" id="follow-form"><input name="followup" placeholder="Type what’s changed" aria-label="Type what’s changed" autocomplete="off"/><button class="send" aria-label="Send" disabled>${SEND_ICON}</button></form></div>`;
+    <div class="composer">${state.request ? `<div class="chips">${["Train is moving again", "Branch isn’t running", "Step-free only", "I’d rather walk"].map(t => `<button class="chip" data-action="follow" data-value="${esc(t)}">${esc(t)}</button>`).join("")}</div>` : ""}
+    <form class="compose-row" id="follow-form"><input name="followup" placeholder="Type what’s changed" aria-label="Type what’s changed" autocomplete="off" ${state.thinking ? "disabled" : ""}/><button class="send" aria-label="Send" disabled>${SEND_ICON}</button></form></div>`;
   app.querySelector(".thread")?.lastElementChild?.scrollIntoView?.({ block: "nearest" });
 }
 
@@ -348,10 +460,14 @@ function settingGroup(title, rows) {
   return `<div class="settings-group"><h2>${title}</h2><div class="card">${rows.map(([icon, name, description, trailing]) => `<div class="setting"><span class="row-icon">${icon}</span><span class="setting-copy"><strong>${name}</strong><small>${description}</small></span>${trailing || ""}</div>`).join("")}</div></div>`;
 }
 
-// Only real choices: step-free routing, plus the TfL data credit the licence asks for.
+const AI_STATUS = { available: "On this device", downloadable: "Not downloaded yet", downloading: "Downloading", unavailable: "Not in this browser" };
+
+// Only real choices: which models read messages, step-free routing, plus the TfL data credit the licence asks for.
 function renderSettings() {
   app.innerHTML = `<section class="screen settings-screen stack"><div class="title-row">${menuButton()}<h1 class="settings-title">Settings</h1></div>
     <div class="settings-group"><h2>Map</h2><div class="card"><div class="setting"><span class="row-icon">◫</span><span class="setting-copy"><strong>City</strong><small>London · Tube · saved ${esc(savedDate())}</small></span></div>${state.storage.supported ? `<label class="setting"><span class="row-icon">▦</span><span class="setting-copy"><strong>Keep map stored</strong></span><input type="checkbox" data-action="persist" ${state.storage.persisted ? "checked disabled" : ""}/></label>` : ""}</div></div>
+    ${settingGroup("Assistant", [["✦", "Chrome on-device model", AI_STATUS[state.ai.onDevice] ?? "Not in this browser"]])}
+    ${state.ai.configured ? `<div class="settings-group assistant-cloud"><div class="card"><label class="setting"><span class="row-icon">☁</span><span class="setting-copy"><strong>Use Gemini when online</strong></span><input type="checkbox" data-action="cloud" ${state.prefs.cloud ? "checked" : ""}/></label></div></div>` : ""}
     <div class="settings-group"><h2>Routes</h2><div class="card"><label class="setting"><span class="row-icon">♿</span><span class="setting-copy"><strong>Step-free changes only</strong></span><input type="checkbox" data-action="stepfree" ${state.prefs.stepFree ? "checked" : ""}/></label></div></div>
     ${canInstall() ? settingGroup("App", [["⤓", "Install PocketRoute", "", `<button class="pill-button" data-action="install">Install</button>`]]) : ""}
     ${settingGroup("About", [["ⓘ", "Map data & licences", "TfL Open Data · Open Government Licence v3.0"]])}</section>`;
@@ -461,7 +577,9 @@ document.addEventListener("click", event => {
       if (leg) { state.originId = leg.stops[0]; state.originConfirmed = true; state.onLine = leg.lineId; }
       startSearch(); break;
     }
-    case "follow": applyFollowUp(value); break;
+    case "follow": sendMessage(value, { quick: true }); break;
+    case "answer": chooseAnswer(value); break;
+    case "answer-other": openPicker(state.awaiting !== "destination"); state.picker.answering = true; break;
     case "recent": {
       const recent = state.recents[Number(value)];
       if (recent) { state.originId = recent.origin; state.originConfirmed = true; state.destinationId = recent.destination; state.onLine = null; state.situations.clear(); state.view = "route"; startSearch(); }
@@ -480,7 +598,10 @@ function chooseStation(id) {
   } else {
     state.destinationId = id;
   }
-  dialog.close(); render();
+  dialog.close();
+  // The picker answered the assistant's question.
+  if (state.picker.answering) { state.picker.answering = false; if (origin) state.originId = null; else state.destinationId = null; chooseAnswer(id); return; }
+  render();
   // Picking "I'm at" moves straight on to "Going to" when that's still empty.
   if (origin && !state.destinationId) openPicker(false);
 }
@@ -492,16 +613,20 @@ for (const sheet of [dialog, offlineDialog, locationDialog]) {
 
 searchInput.addEventListener("input", populateStations);
 document.addEventListener("submit", event => {
-  if (event.target.id !== "follow-form") return;
-  if (!new FormData(event.target).get("followup")?.trim()) { event.preventDefault(); return; }
+  if (event.target.id !== "follow-form" && event.target.id !== "describe-form") return;
   event.preventDefault();
-  applyFollowUp(new FormData(event.target).get("followup") || "");
+  const text = new FormData(event.target).get("followup")?.trim();
+  if (!text) return;
+  // A new description on the first screen starts a new conversation.
+  if (event.target.id === "describe-form") { state.thread = []; state.request = null; state.awaiting = null; state.constraints = null; }
+  sendMessage(text);
 });
 document.addEventListener("change", event => {
   const { action } = event.target.dataset;
   if (action === "persist") requestPersistence();
   if (action === "stepfree") { state.prefs.stepFree = event.target.checked; store.set("pocketroute.stepFree", state.prefs.stepFree); }
   if (action === "on-line") { state.onLine = event.target.value || null; }
+  if (action === "cloud") { state.prefs.cloud = event.target.checked; store.set("pocketroute.cloudAssist", state.prefs.cloud); }
 });
 window.addEventListener("online", () => { state.online = true; render(); });
 window.addEventListener("offline", () => { state.online = false; render(); });
@@ -510,6 +635,11 @@ function updateOfflineDialog() {
   document.querySelector("#offline-title").textContent = state.online ? "You’re online" : "You’re offline";
   document.querySelector("#offline-last-signal").textContent = state.location.suggestion ? `Last known station · ${nameOf(state.location.suggestion)}` : "No recent location";
   document.querySelector("#offline-map-detail").textContent = `Tube map saved in this browser · ${savedDate()}`;
+  const onDevice = state.ai.onDevice === "available", cloud = state.ai.configured && state.prefs.cloud && state.online;
+  const ai = document.querySelector("#offline-ai");
+  ai.className = `offline-feature ${onDevice || cloud ? "available" : "unavailable"}`;
+  ai.querySelector("span").textContent = onDevice || cloud ? "✓" : "×";
+  ai.querySelector("small").textContent = onDevice ? "Chrome’s model in this browser, no signal needed" : cloud ? "Gemini while you’re online; keywords offline" : "Station names, common phrases and quick replies";
 }
 
 async function boot() {
@@ -518,6 +648,7 @@ async function boot() {
     const response = await fetch(DATA_URL);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     state.graph = buildGraph(await response.json());
+    state.matcher = createMatcher(state.graph);
   } catch (error) {
     state.loadError = "Open the app once with a connection to save the map for offline use.";
     render();
@@ -530,6 +661,9 @@ async function boot() {
   if (state.permission === "granted") locate();
   else if (state.permission === "denied") { state.location.status = "denied"; render(); }
   if (state.storage.supported) { state.storage.persisted = await navigator.storage.persisted().catch(() => false); render(); }
+  state.ai.onDevice = await onDeviceStatus();
+  if (navigator.onLine) state.ai.configured = await isConfigured();
+  render();
 }
 
 // MARK: - Location permission

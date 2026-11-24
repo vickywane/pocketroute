@@ -2,7 +2,7 @@
 
 ## Product boundary
 
-PockerRouter is an offline re-routing assistant for London Underground passengers who lose signal when their journey is disrupted (a held train, a train terminating early, a closed line or branch, a missed stop). It is not a primary journey planner.
+PocketRoute is an offline re-routing assistant for London Underground passengers who lose signal when their journey is disrupted (a held train, a train terminating early, a closed line or branch, a missed stop). It is not a primary journey planner.
 
 The app answers one question: "From where I am now, how do I get to where I'm going?" It answers using an offline copy of the Tube network on the device. Connectivity is only used to refresh that network data and, optionally, for cloud model fallback.
 
@@ -20,7 +20,7 @@ The app answers one question: "From where I am now, how do I get to where I'm go
 - Edges: line segments (line, branch, direction, order of stops, typical run time), interchanges within a station (with typical transfer time), and walking links between nearby stations (distance and estimated time).
 - Branches are modelled explicitly (for example, the Northern line's Bank and Charing Cross branches meet at Camden Town and Kennington), because many re-routes depend on them.
 - Each network snapshot is versioned and records its source, licence and retrieval date. The app shows the snapshot date to the user ("Tube map saved on this iPhone · 14 Nov").
-- The source-generated TfL snapshot is in `shared/fixtures/london-underground-network-v1.json`; rebuild it with `tools/build_tfl_network.py`. The separate `demo-journey.json` fixture remains illustrative. Confirm current TfL API terms and attribution before production use.
+- The source-generated TfL snapshot is in `shared/fixtures/london-underground-network-v1.json`; rebuild it with `tools/build_tfl_network.py`. Confirm current TfL API terms and attribution before production use.
 
 ## AI boundary
 
@@ -40,10 +40,12 @@ GPS does not work underground. The app records the last station where the phone 
 - **iOS:** SwiftUI and Swift 6, designed for large tap targets, one-handed use and Dynamic Type. The intended native speech path is on-device speech recognition.
 - **PWA:** static web client with an installable manifest and service worker for caching the application shell. Voice input is omitted. Browser geolocation provides an optional nearby-station suggestion; the user confirms the station because GPS is often unavailable underground.
 - Both clients route on the TfL snapshot. The deterministic engine (`apps/ios/PockerRouter/Routing/RouteEngine.swift`, mirrored in `apps/web/route-engine.js`) runs a Dijkstra search over (station, line, previous stop) states, so it knows when one train can continue through a junction and when the passenger must change trains (for example between the Northern line's branches). It returns the fastest plan, a fewest-changes plan when different, an alternative when only one exists, and a walking option within 40 minutes.
-- Messages (typed, spoken or chips) are read into a `ParsedTurn` by Apple Foundation Models on device when available, or by keyword rules otherwise; the model's reading is grounded against the passenger's words, names are resolved against the saved map, and ambiguous or unknown stations become a question with tappable choices. See [AI interaction](ai-interaction.md).
+- Messages (typed, spoken or chips) are read into a `ParsedTurn` by the best reader available, grounded against the passenger's words, and resolved against the saved map; ambiguous or unknown stations become a question with tappable choices. See [AI interaction](ai-interaction.md).
+  - **iOS:** Apple Foundation Models on device, then Gemini through Firebase AI Logic when the passenger opted in and is online, then keyword rules (`HybridInterpreter`).
+  - **Web:** Firebase AI Logic hybrid mode: Chrome's built-in model on device (`PREFER_ON_DEVICE`, or `ONLY_ON_DEVICE` when Gemini is off), Gemini as the cloud fallback, then keyword rules. `apps/web/assistant.js` is a port of the iOS matcher, keyword rules, grounding and planner.
+- Ride times are estimated from distance at each line's typical running speed (`NetworkGraph.lineMetresPerMinute`, `LINE_METRES_PER_MIN`), because the source has no timetabled run times.
 - Location: the last good fix (accuracy ≤ 1 km, kept for 12 hours) is matched against whichever map is loaded and re-matched when a new map loads. A suggestion within 2 km becomes the default "I'm at" station until the passenger picks one themselves.
-- The iOS app keeps the downloaded map at a path relative to Application Support (iOS can move the app container on update), deletes superseded versions, and can retry a failed download. The iOS app runs Apple Foundation Models on device for message understanding; neither client runs Firebase AI Logic (Gemini) inference yet.
-- Gemini cloud fallback through Firebase AI Logic remains planned (off by default), as does Chrome's Prompt API on supported desktop web. Both platform APIs have compatibility limits described in their setup guides.
+- The iOS app keeps the downloaded map at a path relative to Application Support (iOS can move the app container on update), deletes superseded versions, and can retry a failed download.
 - Store the production network snapshot and current re-routing session locally on each platform (versioned JSON first; SwiftData can follow on iOS, browser storage on web).
 
 ## Fallback when AI is unavailable
@@ -52,4 +54,9 @@ If no model can run (unsupported device, Apple Intelligence disabled, no connect
 
 ## Firebase responsibilities
 
-Firebase AI Logic powers the cloud fallback and hybrid orchestration from the client. App Check protects eligible Firebase requests. Crashlytics and Analytics are optional later additions, subject to privacy review. Firestore is not needed: the core re-routing flow must never depend on a network database.
+- **Firebase AI Logic:** Gemini cloud reading on both clients, and on-device hybrid inference in Chrome. Off until the passenger turns it on; messages never leave the device otherwise.
+- **Remote Config:** `assistant_cloud_enabled` and `assistant_cloud_model`, with in-app defaults, so the cloud model can be switched off or changed without a release.
+- **App Check:** protects the iOS app's Gemini requests.
+- **Hosting:** the PWA and the versioned Tube map dataset.
+
+Firestore is not needed: the core re-routing flow must never depend on a network database. Crashlytics and Analytics are optional later additions, subject to privacy review.

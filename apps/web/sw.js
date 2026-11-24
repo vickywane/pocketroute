@@ -1,9 +1,9 @@
 // Bump CACHE_VERSION whenever the shell's file list changes. Contents update
 // on their own: cached files are served immediately and refreshed in the
 // background, so users get new code on the next launch.
-const CACHE_VERSION = "v17";
+const CACHE_VERSION = "v19";
 const CACHE = `pocketroute-${CACHE_VERSION}`;
-const SHELL = ["/", "/index.html", "/styles.css", "/flow-overrides.css", "/app.js", "/route-engine.js",
+const SHELL = ["/", "/index.html", "/styles.css", "/flow-overrides.css", "/app.js", "/route-engine.js", "/assistant.js", "/firebase-ai.js",
   "/manifest.webmanifest", "/icon.svg", "/data/london-underground-network-v1.json"];
 
 self.addEventListener("install", event => {
@@ -21,7 +21,14 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
   const { request } = event;
-  if (request.method !== "GET" || new URL(request.url).origin !== self.location.origin) return;
+  if (request.method !== "GET") return;
+  const url = new URL(request.url);
+  // The versioned Firebase SDK never changes, so keep it for offline use once loaded.
+  if (url.origin === "https://www.gstatic.com" && url.pathname.startsWith("/firebasejs/")) {
+    event.respondWith(caches.match(request).then(cached => cached || fetch(request).then(response => { cachePut(request, response.clone()); return response; })));
+    return;
+  }
+  if (url.origin !== self.location.origin) return;
 
   // Pages: network first so a new deploy shows up, cached shell when offline.
   if (request.mode === "navigate") {

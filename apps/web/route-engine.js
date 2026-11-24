@@ -2,6 +2,12 @@
 // Mirrors apps/ios/PockerRouter/Routing/RouteEngine.swift; keep the two in step.
 
 const RIDE_METRES_PER_MIN = 550;
+// Typical running speed between stops per line, in metres per minute.
+// Mirrors NetworkGraph.lineMetresPerMinute in the iOS app.
+export const LINE_METRES_PER_MIN = {
+  metropolitan: 750, jubilee: 620, victoria: 600, central: 600, piccadilly: 580,
+  northern: 550, "waterloo-city": 550, district: 480, bakerloo: 480, circle: 420, "hammersmith-city": 420
+};
 const DWELL_MIN = 0.6;
 const BOARD_MIN = 4;
 const CHANGE_MIN = 5;
@@ -45,7 +51,7 @@ export function buildGraph(snapshot) {
       if (!seen.has(key)) {
         seen.add(key);
         const from = stations.get(ids[i]), to = stations.get(ids[i + 1]);
-        const edge = { from: ids[i], to: ids[i + 1], lineId: route.lineId, minutes: DWELL_MIN + distanceMetres(from, to) / RIDE_METRES_PER_MIN };
+        const edge = { from: ids[i], to: ids[i + 1], lineId: route.lineId, minutes: DWELL_MIN + distanceMetres(from, to) / (LINE_METRES_PER_MIN[route.lineId] ?? RIDE_METRES_PER_MIN) };
         if (!edgesFrom.has(edge.from)) edgesFrom.set(edge.from, []);
         edgesFrom.get(edge.from).push(edge);
       }
@@ -79,6 +85,17 @@ export function buildGraph(snapshot) {
       }
       return best && bestDistance <= withinMetres ? { station: best, distance: bestDistance } : null;
     },
+    segmentKeys(line, a, b) {
+      const keys = new Set();
+      for (const route of routes) {
+        if (route.lineId !== line) continue;
+        const i = route.stationIds.indexOf(a), j = route.stationIds.indexOf(b);
+        if (i < 0 || j < 0 || i === j) continue;
+        const slice = route.stationIds.slice(Math.min(i, j), Math.max(i, j) + 1);
+        slice.slice(0, -1).forEach((x, k) => keys.add(segmentKey(line, x, slice[k + 1])));
+      }
+      return keys;
+    },
     lineOrder(line, around) {
       const candidates = routes.filter(r => r.lineId === line && r.stationIds.includes(around));
       const longest = candidates.sort((a, b) => b.stationIds.length - a.stationIds.length)[0];
@@ -89,11 +106,11 @@ export function buildGraph(snapshot) {
 
 export const segmentKey = (line, a, b) => (a < b ? `${line}|${a}|${b}` : `${line}|${b}|${a}`);
 
-// request: { origin, destination, onLine, trainStuck, avoidLines:Set, avoidSegments:Set, stepFreeOnly, includeWalking }
+// request: { origin, destination, onLine, trainStuck, avoidLines:Set, avoidSegments:Set, avoidStations:Set, stepFreeOnly, includeWalking }
 export function routeOptions(graph, request) {
   const origin = graph.stations.get(request.origin), destination = graph.stations.get(request.destination);
   if (!origin || !destination || origin.id === destination.id) return [];
-  const req = { avoidLines: new Set(), avoidSegments: new Set(), includeWalking: true, ...request };
+  const req = { avoidLines: new Set(), avoidSegments: new Set(), avoidStations: new Set(), includeWalking: true, ...request };
   const plans = [];
   const add = plan => { if (plan && !plans.some(p => p.id === plan.id)) plans.push(plan); };
   add(search(graph, req, CHANGE_MIN));
@@ -136,7 +153,8 @@ function makePlan(legs, total) {
 
 function search(graph, req, changeWeight) {
   const allowed = e => !req.avoidLines.has(e.lineId) && !req.avoidSegments.has(segmentKey(e.lineId, e.from, e.to));
-  const canChange = id => !req.stepFreeOnly || graph.stations.get(id)?.liftAccess === true;
+  // Trains may pass through a closed station, but nobody changes, walks or gets off there.
+  const canChange = id => (!req.avoidStations.has(id) || id === req.origin) && (!req.stepFreeOnly || graph.stations.get(id)?.liftAccess === true);
   const key = s => `${s.station}|${s.line ?? ""}|${s.previous ?? ""}|${s.start ? 1 : 0}`;
   const start = { station: req.origin, line: null, previous: null, start: true };
   const cost = new Map([[key(start), 0]]);
@@ -178,6 +196,7 @@ function search(graph, req, changeWeight) {
           { type: "ride", line: e.lineId, from: e.from, to: e.to, minutes: e.minutes, sameLineChange: false }, e.minutes + wait);
       }
       for (const other of graph.linked.get(state.station) || []) {
+        if (req.avoidStations.has(other)) continue;
         const a = graph.stations.get(state.station), b = graph.stations.get(other);
         if (!a || !b) continue;
         const metres = distanceMetres(a, b), minutes = walkMinutes(metres) + 2;
